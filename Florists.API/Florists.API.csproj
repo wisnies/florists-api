@@ -7,17 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="Common\Mapping\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Florists.Application\Florists.Application.csproj" />
     <ProjectReference Include="..\Florists.Core\Florists.Core.csproj" />
+    <ProjectReference Include="..\Florists.Infrastructure\Florists.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
