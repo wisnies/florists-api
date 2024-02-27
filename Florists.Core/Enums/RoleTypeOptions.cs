@@ -2,10 +2,9 @@
 {
   public enum RoleTypeOptions
   {
-    Admin,
-    Demo,
-    Florist,
-    Sales,
-    Production
+    Admin = 1,
+    Demo = 2,
+    Florist = 3,
+    Sales = 4,
   }
 }

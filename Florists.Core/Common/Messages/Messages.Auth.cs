@@ -12,6 +12,7 @@
 
       public const string EmailIsRequired = "Email address is required";
       public const string EmailMustBeValid = "This must be a valid email address";
+      public const string EmailDuplicate = "This email is already taken";
 
       public const string JwtTokenIsRequired = "Jwt token is required";
       public const string JwtTokenIsInvalid = "Jwt token is invalid";

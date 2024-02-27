@@ -2,6 +2,8 @@
 using Florists.Application.Interfaces.Persistence;
 using Florists.Application.Interfaces.Services;
 using Florists.Infrastructure.Interfaces;
+using Florists.Infrastructure.Persistence;
+using Florists.Infrastructure.Policies;
 using Florists.Infrastructure.Repositories;
 using Florists.Infrastructure.Services;
 using Florists.Infrastructure.Settings;
@@ -61,6 +63,7 @@ namespace Florists.Infrastructure
       this IServiceCollection services)
     {
       services.AddScoped<IUserRepository, UserRepository>();
+      services.AddScoped<IRoleRepository, RoleRepository>();
       return services;
     }
 
@@ -111,6 +114,13 @@ namespace Florists.Infrastructure
            IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(tokenSettings.Key))
          };
+      });
+
+      services.AddAuthorization(options =>
+      {
+        options.AddPolicy(
+          ForAdminPolicy.Name,
+          policy => policy.AddForAdminPolicy());
       });
 
       return services;

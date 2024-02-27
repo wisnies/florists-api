@@ -42,7 +42,12 @@ namespace Florists.Infrastructure.Services
 
       var refreshTokenexpiration = _dateTimeService.UtcNow.AddMinutes(Convert.ToInt32(_tokenSettings.RefreshTokenExpiresInMinutes));
 
-      var claims = new Claim[] { new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()), new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), new Claim(ClaimTypes.Name, user.FirstName + user.LastName), new Claim(ClaimTypes.Email, user.Email) };
+      var claims = new Claim[] {
+        new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(ClaimTypes.Name, user.FirstName + user.LastName),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.Role!.RoleType.ToString())};
 
       var securityKey = new SymmetricSecurityKey(
       Encoding.UTF8.GetBytes(_tokenSettings.Key));

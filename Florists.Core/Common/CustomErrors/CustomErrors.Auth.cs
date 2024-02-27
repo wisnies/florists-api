@@ -21,6 +21,11 @@ namespace Florists.Core.Common.CustomErrors
           code: "Auth.InvalidCredentials",
           description: Messages.Messages.Auth.RefreshTokenExpired);
 
+      public static Error EmailDuplicate =>
+        Error.Validation(
+          code: "Auth.InvalidCredentials",
+          description: Messages.Messages.Auth.EmailDuplicate);
+
       public static Error UnableToLogin =>
         Error.Failure(
           code: "Auth.UnableToLogin",
