@@ -6,5 +6,7 @@
     public string ConnectionString { get; set; } = null!;
     public string UsersTable { get; set; } = null!;
     public string RolesTable { get; set; } = null!;
+    public string FlowersTable { get; set; } = null!;
+    public string FlowerTransactionsTable { get; set; } = null!;
   }
 }

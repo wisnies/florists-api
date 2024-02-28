@@ -50,14 +50,15 @@ namespace Florists.Infrastructure.Persistence
       try
       {
         string sql = $"Update {_settings.RolesTable} " +
-      $"SET role_type = @RoleType " +
+      $"SET role_type = @RoleType, updated_at = @UpdatedAt " +
       $"WHERE user_id = @UserId AND role_id = @RoleId";
 
         var parameters = new
         {
-          RoleId = role.RoleId,
-          UserId = role.UserId,
-          RoleType = role.RoleType,
+          role.RoleId,
+          role.UserId,
+          role.RoleType,
+          role.UpdatedAt
         };
 
         var rowsAffected = await _dataAccess.SaveData(sql, parameters);

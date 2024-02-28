@@ -367,7 +367,7 @@ namespace Florists.Infrastructure.Repositories
       try
       {
         string sql = $"Update {_settings.UsersTable} " +
-      $"SET email = @Email, first_name = @FirstName, last_name = @LastName " +
+      $"SET email = @Email, first_name = @FirstName, last_name = @LastName, updated_at = @UpdatedAt " +
       $"WHERE user_id = @UserId AND is_active = true";
 
         var parameters = new
@@ -376,6 +376,7 @@ namespace Florists.Infrastructure.Repositories
           user.Email,
           user.FirstName,
           user.LastName,
+          user.UpdatedAt
         };
 
         var rowsAffected = await _dataAccess.SaveData(sql, parameters);

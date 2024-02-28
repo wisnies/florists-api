@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using Florists.Application.Interfaces.Persistence;
+using Florists.Application.Interfaces.Services;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Common.Messages;
 using Florists.Core.DTO.User;
@@ -12,13 +13,16 @@ namespace Florists.Application.Features.User.Commands.EditUser
   {
     private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
+    private readonly IDateTimeService _dateTimeService;
 
     public EditUserCommandHandler(
       IUserRepository userRepository,
-      IRoleRepository roleRepository)
+      IRoleRepository roleRepository,
+      IDateTimeService dateTimeService)
     {
       _userRepository = userRepository;
       _roleRepository = roleRepository;
+      _dateTimeService = dateTimeService;
     }
 
     public async Task<ErrorOr<UserResultDTO>> Handle(
@@ -37,6 +41,7 @@ namespace Florists.Application.Features.User.Commands.EditUser
       user.Email = command.Email;
       user.FirstName = command.FirstName;
       user.LastName = command.LastName;
+      user.UpdatedAt = _dateTimeService.UtcNow;
 
       var currentUserRole = user.Role.RoleType;
 
@@ -48,6 +53,7 @@ namespace Florists.Application.Features.User.Commands.EditUser
         }
 
         user.Role.RoleType = command.RoleType;
+        user.Role.UpdatedAt = _dateTimeService.UtcNow;
 
         var roleSuccess = await _roleRepository.UpdateAsync(user.Role);
 

@@ -31,7 +31,6 @@ namespace Florists.API.Controllers.v1
     [HttpPost("create")]
     public async Task<IActionResult> CreateUser(CreateUserRequest request)
     {
-      var ctx = HttpContext.User;
       var command = _mapper.Map<CreateUserCommand>(request);
 
       var result = await _mediator.Send(command);

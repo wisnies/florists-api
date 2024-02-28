@@ -1,4 +1,6 @@
-﻿namespace Florists.Infrastructure.Interfaces
+﻿using Florists.Infrastructure.DTO;
+
+namespace Florists.Infrastructure.Interfaces
 {
   public interface IDataAccess
   {
@@ -8,5 +10,7 @@
     Task<int> SaveData<T>(
       string sql,
       T parameters);
+
+    Task<int> SaveDataTransaction(List<DependantQueryDTO> dependantQueries);
   }
 }
