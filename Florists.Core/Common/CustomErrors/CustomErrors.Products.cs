@@ -10,6 +10,11 @@ namespace Florists.Core.Common.CustomErrors
         Error.Validation(
           code: "Validation.ProductName",
           description: Messages.Messages.Products.AlreadyExists);
+
+      public static Error NotFound =>
+        Error.NotFound(
+          code: "NotFound.Product",
+          description: Messages.Messages.Products.NotFound);
     }
   }
 }

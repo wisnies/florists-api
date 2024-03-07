@@ -1,4 +1,7 @@
 ﻿using Florists.Application.Features.Products.Commands.CreateProduct;
+using Florists.Application.Features.Products.Commands.DeleteProduct;
+using Florists.Application.Features.Products.Queries.GetProductById;
+using Florists.Application.Features.Products.Queries.GetProductsByName;
 using Florists.Core.Contracts.Products;
 using MapsterMapper;
 using MediatR;
@@ -23,7 +26,73 @@ namespace Florists.API.Controllers.v1
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> CreateBouqet(CreateProductRequest request)
+    public async Task<IActionResult> CreateProduct(CreateProductRequest request)
+    {
+      var command = _mapper.Map<CreateProductCommand>(request);
+
+      var result = await _mediator.Send(command);
+
+      return result.Match(result => Ok(_mapper.Map<ProductResponse>(result)),
+        errors => Problem(errors));
+    }
+
+    [HttpPost("edit/{productId}")]
+    public async Task<IActionResult> EditProduct(CreateProductRequest request, Guid productId)
+    {
+      var command = _mapper.Map<CreateProductCommand>(request);
+
+      var result = await _mediator.Send(command);
+
+      return result.Match(result => Ok(_mapper.Map<ProductResponse>(result)),
+        errors => Problem(errors));
+    }
+
+    [HttpDelete("delete/{productId}")]
+    public async Task<IActionResult> DeleteProduct(Guid productId)
+    {
+      var command = new DeleteProductCommand(productId);
+
+      var result = await _mediator.Send(command);
+
+      return result.Match(result => Ok(_mapper.Map<ProductResponse>(result)),
+        errors => Problem(errors));
+    }
+
+    [HttpGet("products")]
+    public async Task<IActionResult> GetProductsByName([FromQuery] GetProductsByNameRequest request)
+    {
+      var query = _mapper.Map<GetProductsByNameQuery>(request);
+
+      var result = await _mediator.Send(query);
+
+      return result.Match(result => Ok(_mapper.Map<ProductsResponse>(result)),
+        errors => Problem(errors));
+    }
+
+    [HttpGet("product/{productId}")]
+    public async Task<IActionResult> GetProductById(Guid productId)
+    {
+      var query = new GetProductByIdQuery(productId);
+
+      var result = await _mediator.Send(query);
+
+      return result.Match(result => Ok(_mapper.Map<ProductResponse>(result)),
+        errors => Problem(errors));
+    }
+
+    [HttpPost("produce")]
+    public async Task<IActionResult> ProduceProduct(CreateProductRequest request, Guid productId)
+    {
+      var command = _mapper.Map<CreateProductCommand>(request);
+
+      var result = await _mediator.Send(command);
+
+      return result.Match(result => Ok(_mapper.Map<ProductResponse>(result)),
+        errors => Problem(errors));
+    }
+
+    [HttpPost("sell")]
+    public async Task<IActionResult> SellProducts(CreateProductRequest request, Guid productId)
     {
       var command = _mapper.Map<CreateProductCommand>(request);
 
