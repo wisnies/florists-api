@@ -96,7 +96,7 @@ namespace Florists.API.Common.Errors
       {
 
         problemDetails.Extensions
-        .Add("errors", errors.Select(e => e.Code));
+        .Add("error", errors.Select(e => e.Code).FirstOrDefault());
       }
     }
   }

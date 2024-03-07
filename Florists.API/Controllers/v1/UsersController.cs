@@ -1,8 +1,8 @@
-﻿using Florists.Application.Features.User.Commands.CreateUser;
-using Florists.Application.Features.User.Commands.DeleteUser;
-using Florists.Application.Features.User.Commands.EditUser;
-using Florists.Application.Features.User.Queries.GetUserById;
-using Florists.Application.Features.User.Queries.GetUsersByLastName;
+﻿using Florists.Application.Features.Users.Commands.CreateUser;
+using Florists.Application.Features.Users.Commands.DeleteUser;
+using Florists.Application.Features.Users.Commands.EditUser;
+using Florists.Application.Features.Users.Queries.GetUserById;
+using Florists.Application.Features.Users.Queries.GetUsersByLastName;
 using Florists.Core.Contracts.User;
 using Florists.Infrastructure.Policies;
 using MapsterMapper;

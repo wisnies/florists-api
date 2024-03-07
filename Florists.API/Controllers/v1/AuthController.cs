@@ -43,7 +43,7 @@ namespace Florists.API.Controllers.v1
         );
     }
 
-    [HttpPost("logout")]
+    [HttpGet("logout")]
     public async Task<IActionResult> Logout()
     {
       var identity = (ClaimsIdentity?)HttpContext.User.Identity;

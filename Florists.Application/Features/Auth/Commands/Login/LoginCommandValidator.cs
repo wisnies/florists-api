@@ -9,9 +9,9 @@ namespace Florists.Application.Features.Auth.Commands.Login
     {
       RuleFor(x => x.Email)
         .NotEmpty()
-        .WithMessage(Messages.Auth.EmailIsRequired)
+        .WithMessage(Messages.Email.IsRequired)
         .EmailAddress()
-        .WithMessage(Messages.Auth.EmailMustBeValid);
+        .WithMessage(Messages.Email.IsInvalid);
       RuleFor(x => x.Password)
         .NotEmpty()
         .WithMessage(Messages.Auth.PasswordIsRequired);

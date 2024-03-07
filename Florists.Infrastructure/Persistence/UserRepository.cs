@@ -1,10 +1,12 @@
 ﻿using Florists.Application.Interfaces.Persistence;
 using Florists.Core.DTO.Auth;
 using Florists.Core.Entities;
+using Florists.Infrastructure.DTO.Common;
+using Florists.Infrastructure.DTO.Users;
 using Florists.Infrastructure.Interfaces;
-using Florists.Infrastructure.Records;
 using Florists.Infrastructure.Settings;
 using Microsoft.Extensions.Options;
+using System.Data;
 
 namespace Florists.Infrastructure.Repositories
 {
@@ -35,7 +37,7 @@ namespace Florists.Infrastructure.Repositories
           Email = email
         };
 
-        var result = await _dataAccess.LoadData<UserRecordWithRole, dynamic>(sql, parameters);
+        var result = await _dataAccess.LoadData<UserRecordWithRoleDTO, dynamic>(sql, parameters);
 
         FloristsUser? user = result.Select(x => new FloristsUser
         {
@@ -108,7 +110,7 @@ namespace Florists.Infrastructure.Repositories
           RefreshToken = refreshToken
         };
 
-        var result = await _dataAccess.LoadData<UserRecordWithRole, dynamic>(sql, parameters);
+        var result = await _dataAccess.LoadData<UserRecordWithRoleDTO, dynamic>(sql, parameters);
 
         FloristsUser? user = result.Select(x => new FloristsUser
         {
@@ -192,11 +194,16 @@ namespace Florists.Infrastructure.Repositories
     {
       try
       {
-        var sql = $"INSERT INTO {_settings.UsersTable} " +
+        if (user.Role is null)
+        {
+          throw new Exception();
+        }
+        var queries = new List<QueryDTO>();
+        var createUserSql = $"INSERT INTO {_settings.UsersTable} " +
           $"(user_id, is_active, is_password_changed, password_hash, email, first_name, last_name, created_at) " +
           $"VALUES (@UserId, @IsActive, @IsPasswordChanged, @PasswordHash, @Email, @FirstName, @LastName, @CreatedAt)";
 
-        var parameters = new
+        var createUserParameters = new
         {
           user.UserId,
           user.IsActive,
@@ -208,7 +215,25 @@ namespace Florists.Infrastructure.Repositories
           user.CreatedAt
         };
 
-        var rowsAffected = await _dataAccess.SaveData(sql, parameters);
+        var createUserQuery = new QueryDTO(createUserSql, createUserParameters);
+        queries.Add(createUserQuery);
+
+        var createRoleSql = $"INSERT INTO {_settings.RolesTable} " +
+          $"(role_id, user_id, role_type, created_at) " +
+          $"VALUES (@RoleId, @UserId, @RoleType, @CreatedAt)";
+
+        var createRoleParameters = new
+        {
+          user.Role.RoleId,
+          user.Role.UserId,
+          user.Role.RoleType,
+          user.Role.CreatedAt
+        };
+
+        var createRoleQuery = new QueryDTO(createRoleSql, createRoleParameters);
+        queries.Add(createRoleQuery);
+
+        var rowsAffected = await _dataAccess.SaveTransactionData(queries);
 
         return rowsAffected > 0;
       }
@@ -277,7 +302,7 @@ namespace Florists.Infrastructure.Repositories
           UserId = userId
         };
 
-        var result = await _dataAccess.LoadData<UserRecordWithRole, dynamic>(sql, parameters);
+        var result = await _dataAccess.LoadData<UserRecordWithRoleDTO, dynamic>(sql, parameters);
 
         FloristsUser? user = result.Select(x => new FloristsUser
         {
@@ -329,7 +354,7 @@ namespace Florists.Infrastructure.Repositories
           Offset = offset,
         };
 
-        var result = await _dataAccess.LoadData<UserRecordWithRole, dynamic>(sql, parameters);
+        var result = await _dataAccess.LoadData<UserRecordWithRoleDTO, dynamic>(sql, parameters);
 
         List<FloristsUser> users = result.ConvertAll(x => new FloristsUser
         {
@@ -366,11 +391,18 @@ namespace Florists.Infrastructure.Repositories
     {
       try
       {
-        string sql = $"Update {_settings.UsersTable} " +
+
+        if (user.Role is null)
+        {
+          throw new Exception();
+        }
+
+        var queries = new List<QueryDTO>();
+        string updateUserSql = $"Update {_settings.UsersTable} " +
       $"SET email = @Email, first_name = @FirstName, last_name = @LastName, updated_at = @UpdatedAt " +
       $"WHERE user_id = @UserId AND is_active = true";
 
-        var parameters = new
+        var updateUserParameters = new
         {
           user.UserId,
           user.Email,
@@ -379,13 +411,53 @@ namespace Florists.Infrastructure.Repositories
           user.UpdatedAt
         };
 
-        var rowsAffected = await _dataAccess.SaveData(sql, parameters);
+        var updateUserQuery = new QueryDTO(updateUserSql, updateUserParameters);
+        queries.Add(updateUserQuery);
+
+        var updateRoleSql = $"UPDATE {_settings.RolesTable} " +
+          $"SET role_type = @RoleType, updated_at = @UpdatedAt " +
+          $"WHERE user_id = @UserId AND role_id = @RoleId";
+        var updateRoleParameters = new
+        {
+          user.Role.RoleType,
+          user.Role.RoleId,
+          user.Role.UserId,
+          user.Role.UpdatedAt
+        };
+
+        var updateRoleQuery = new QueryDTO(updateRoleSql, updateRoleParameters);
+        queries.Add(updateRoleQuery);
+
+        var rowsAffected = await _dataAccess.SaveTransactionData(queries);
 
         return rowsAffected > 0;
       }
       catch
       {
         return false;
+      }
+    }
+
+    public async Task<int> CountByLastNameAsync(string lastName)
+    {
+      try
+      {
+        string sql = $"SELECT COUNT(user_id) as Count " +
+          $"FROM {_settings.UsersTable} " +
+          $"WHERE last_name LIKE @LastName AND is_active = true";
+
+        var parameters = new
+        {
+          LastName = $"%{lastName}%",
+        };
+
+        var result = await _dataAccess.LoadData<RecordCountDTO, dynamic>(sql, parameters);
+
+        return result[0].Count;
+      }
+      catch
+      {
+        return 0;
       }
     }
   }

@@ -63,9 +63,9 @@ namespace Florists.Infrastructure
       this IServiceCollection services)
     {
       services.AddScoped<IUserRepository, UserRepository>();
-      services.AddScoped<IRoleRepository, RoleRepository>();
-      services.AddScoped<IFlowerRepository, FlowerRepository>();
-      services.AddScoped<IFlowerTransactionRepository, FlowerTransactionRepository>();
+      services.AddScoped<IInventoryRepository, InventoryRepository>();
+      services.AddScoped<IInventoryTransactionRepository, InventoryTransactionRepository>();
+      services.AddScoped<IProductRepository, ProductRepository>();
       return services;
     }
 

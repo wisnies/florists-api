@@ -29,7 +29,7 @@ namespace Florists.Application.Features.Auth.Commands.ChangePassword
 
       if (user is null)
       {
-        return CustomErrors.Auth.InvalidCredentials;
+        return CustomErrors.Users.NotFound;
       }
 
       var isOldPasswordValid = await _passwordService.IsValidAsync(
@@ -38,7 +38,7 @@ namespace Florists.Application.Features.Auth.Commands.ChangePassword
 
       if (!isOldPasswordValid)
       {
-        return CustomErrors.Auth.InvalidCredentials;
+        return CustomErrors.Auth.PasswordIsInvalid;
       }
 
       var passwordHash = await _passwordService.GenerateHashAsync(command.NewPassword);
@@ -50,19 +50,19 @@ namespace Florists.Application.Features.Auth.Commands.ChangePassword
 
       if (!changePasswordSuccess)
       {
-        return CustomErrors.Auth.UnableToChangePassword;
+        return CustomErrors.Database.SaveError;
       }
 
       var logoutSuccess = await _userRepository.LogoutAsync(user);
 
       if (!logoutSuccess)
       {
-        return CustomErrors.Auth.UnableToLogout;
+        return CustomErrors.Database.SaveError;
       }
 
       return new MessageResultDTO(
         true,
-        Messages.Auth.PasswordChangeSuccess);
+        Messages.Database.SaveSuccess);
     }
   }
 }

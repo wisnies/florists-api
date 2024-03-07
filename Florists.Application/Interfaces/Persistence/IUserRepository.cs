@@ -16,5 +16,6 @@ namespace Florists.Application.Interfaces.Persistence
     Task<bool> Delete(FloristsUser user);
     Task<bool> DeleteSoft(FloristsUser user);
     Task<bool> UpdateAsync(FloristsUser user);
+    Task<int> CountByLastNameAsync(string lastName);
   }
 }

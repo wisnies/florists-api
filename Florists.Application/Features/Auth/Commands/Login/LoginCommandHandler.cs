@@ -51,10 +51,12 @@ namespace Florists.Application.Features.Auth.Commands.Login
 
       if (!success)
       {
-        return CustomErrors.Auth.UnableToLogin;
+        return CustomErrors.Database.SaveError;
       }
 
-      return new AuthResultDTO(dbUser, userTokens);
+      return new AuthResultDTO(
+        dbUser,
+        userTokens);
     }
   }
 }

@@ -1,8 +1,8 @@
-﻿using Florists.Core.Entities;
+﻿using Florists.Core.DTO.Common;
 
 namespace Florists.Core.Contracts.User
 {
   public record UserResponse(
     string Message,
-    FloristsUser User);
+    UserDTO User);
 }

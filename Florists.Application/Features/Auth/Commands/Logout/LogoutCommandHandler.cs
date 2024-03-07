@@ -24,19 +24,19 @@ namespace Florists.Application.Features.Auth.Commands.Logout
 
       if (user is null)
       {
-        return CustomErrors.Auth.InvalidCredentials;
+        return CustomErrors.Users.NotFound;
       }
 
       var success = await _userRepository.LogoutAsync(user);
 
       if (!success)
       {
-        return CustomErrors.Auth.UnableToLogout;
+        return CustomErrors.Database.SaveError;
       }
 
       return new MessageResultDTO(
         true,
-        Messages.Auth.LogoutSuccess);
+        Messages.Database.SaveSuccess);
     }
   }
 }

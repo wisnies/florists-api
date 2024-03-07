@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using Florists.Infrastructure.DTO;
+using Florists.Infrastructure.DTO.Common;
 using Florists.Infrastructure.Interfaces;
 using Florists.Infrastructure.Settings;
 using Microsoft.Extensions.Options;
@@ -36,7 +36,7 @@ namespace Florists.Infrastructure
       return connection.ExecuteAsync(sql, parameters);
     }
 
-    public async Task<int> SaveDataTransaction(List<DependantQueryDTO> dependantQueries)
+    public async Task<int> SaveTransactionData(List<QueryDTO> queries)
     {
       using (IDbConnection connection =
         new MySqlConnection(_settings.ConnectionString))
@@ -47,26 +47,24 @@ namespace Florists.Infrastructure
         {
           try
           {
-            var rowsAffected = 0;
-            foreach (var query in dependantQueries)
+            var totalAffectedRows = 0;
+            foreach (var query in queries)
             {
-              var affectedRows1 = await connection.ExecuteAsync(query.SqlMaster, query.ParametersMaster);
-              var affectedRows2 = await connection.ExecuteAsync(query.SqlSlave, query.ParametersSlave);
-              if (affectedRows1 <= 0 || affectedRows2 <= 0)
+              var affectedRows = await connection.ExecuteAsync(query.Sql, query.Parameters);
+              if (affectedRows == 0)
               {
                 throw new Exception();
               }
-              rowsAffected++;
+              totalAffectedRows++;
             }
 
             transaction.Commit();
-            return rowsAffected;
+            return totalAffectedRows;
           }
           catch
           {
             transaction.Rollback();
             return 0;
-
           }
         }
       }

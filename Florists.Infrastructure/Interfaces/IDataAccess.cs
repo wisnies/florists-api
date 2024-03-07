@@ -1,4 +1,4 @@
-﻿using Florists.Infrastructure.DTO;
+﻿using Florists.Infrastructure.DTO.Common;
 
 namespace Florists.Infrastructure.Interfaces
 {
@@ -11,6 +11,6 @@ namespace Florists.Infrastructure.Interfaces
       string sql,
       T parameters);
 
-    Task<int> SaveDataTransaction(List<DependantQueryDTO> dependantQueries);
+    Task<int> SaveTransactionData(List<QueryDTO> queries);
   }
 }

@@ -8,43 +8,19 @@ namespace Florists.Core.Common.CustomErrors
     {
       public static Error InvalidCredentials =>
         Error.Validation(
-          code: "Auth.InvalidCredentials",
+          code: "Validation.Email",
           description: Messages.Messages.Auth.InvalidCredentials);
 
-      public static Error InvalidRefreshToken =>
+      public static Error PasswordIsInvalid =>
         Error.Validation(
-          code: "Auth.InvalidCredentials",
-          description: Messages.Messages.Auth.InvalidRefreshToken);
+          code: "Validation.Password",
+          description: Messages.Messages.Auth.PasswordIsInvalid);
 
-      public static Error RefreshTokenExpired =>
-        Error.Validation(
-          code: "Auth.InvalidCredentials",
-          description: Messages.Messages.Auth.RefreshTokenExpired);
 
       public static Error EmailDuplicate =>
         Error.Validation(
-          code: "Auth.InvalidCredentials",
-          description: Messages.Messages.Auth.EmailDuplicate);
-
-      public static Error UnableToLogin =>
-        Error.Failure(
-          code: "Auth.UnableToLogin",
-          description: Messages.Messages.Auth.UnableToLogin);
-
-      public static Error UnableToAuthenticate =>
-        Error.Failure(
-          code: "Auth.UnableToLogin",
-          description: Messages.Messages.Auth.UnableToAuthenticate);
-
-      public static Error UnableToLogout =>
-        Error.Failure(
-          code: "Auth.UnableToLogout",
-          description: Messages.Messages.Auth.UnableToLogout);
-
-      public static Error UnableToChangePassword =>
-        Error.Failure(
-          code: "Auth.UnableToLogout",
-          description: Messages.Messages.Auth.UnableToChangePassword);
+          code: "Validation.Email",
+          description: Messages.Messages.Email.IsDuplicate);
     }
   }
 }

@@ -36,9 +36,9 @@ namespace Florists.Application.Features.Auth.Commands.ChangePassword
 
       RuleFor(x => x.Email)
         .NotEmpty()
-        .WithMessage(Messages.Auth.EmailIsRequired)
+        .WithMessage(Messages.Email.IsRequired)
         .EmailAddress()
-        .WithMessage(Messages.Auth.EmailMustBeValid);
+        .WithMessage(Messages.Email.IsInvalid);
     }
 
     private bool IsLowercase(string password)

@@ -1,8 +1,9 @@
-﻿using Florists.Core.Entities;
+﻿using Florists.Core.DTO.Common;
 
 namespace Florists.Core.Contracts.User
 {
   public record UsersResponse(
     string Message,
-    List<FloristsUser> Users);
+    int Count,
+    List<UserDTO> Users);
 }

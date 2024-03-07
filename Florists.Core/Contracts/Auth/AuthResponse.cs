@@ -1,9 +1,9 @@
 ﻿using Florists.Core.DTO.Auth;
-using Florists.Core.Entities;
+using Florists.Core.DTO.Common;
 
 namespace Florists.Core.Contracts.Auth
 {
   public record AuthResponse(
-  FloristsUser User,
-  UserTokensDTO? Tokens);
+  UserDTO User,
+  AuthTokenDTO Tokens);
 }

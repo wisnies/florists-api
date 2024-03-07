@@ -46,17 +46,17 @@ namespace Florists.Application.Features.Auth.Commands.RefreshToken
 
       if (user is null)
       {
-        return CustomErrors.Auth.InvalidCredentials;
+        return CustomErrors.Users.NotFound;
       }
 
       if (!user.RefreshToken.Equals(command.RefreshToken))
       {
-        return CustomErrors.Auth.InvalidRefreshToken;
+        return CustomErrors.Auth.InvalidCredentials;
       }
 
       if (user.RefreshTokenExpiration < _dateTimeService.UtcNow)
       {
-        return CustomErrors.Auth.RefreshTokenExpired;
+        return CustomErrors.Auth.InvalidCredentials;
       }
 
       var userTokens = _tokenService.GenerateToken(user);
@@ -65,7 +65,7 @@ namespace Florists.Application.Features.Auth.Commands.RefreshToken
 
       if (!success)
       {
-        return CustomErrors.Auth.UnableToAuthenticate;
+        return CustomErrors.Database.SaveError;
       }
 
       return new AuthResultDTO(
