@@ -7,14 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Entities\ProductTransaction.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Entities\ProductTransaction.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="ErrorOr" Version="1.10.0" />
   </ItemGroup>
 

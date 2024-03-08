@@ -240,6 +240,115 @@ namespace Florists.Infrastructure.Persistence
       }
     }
 
+    public async Task<bool> ProduceAsync(ProductTransaction productTransaction, List<InventoryTransaction> inventoryTransactions)
+    {
+      try
+      {
+        if (productTransaction.Product is null)
+        {
+          return false;
+        }
+
+        var queries = new List<QueryDTO>();
+
+        var updateProductSql = $"UPDATE {_settings.ProductsTable} " +
+          $"SET available_quantity = @AvailableQuantity, updated_at = @UpdatedAt " +
+          $"WHERE product_id = @ProductId";
+
+        var updateProductParameters = new
+        {
+          productTransaction.Product.AvailableQuantity,
+          productTransaction.Product.UpdatedAt,
+          productTransaction.ProductId
+        };
+        var updateProductQuery = new QueryDTO(
+          updateProductSql,
+          updateProductParameters);
+
+        queries.Add(updateProductQuery);
+
+
+        var productTransactionSql = $"INSERT INTO {_settings.ProductTransactionsTable} " +
+          $"(transaction_id, product_id, user_id, production_order_number, quantity_before, quantity_after, transaction_value, transaction_type, created_at) " +
+          $"VALUES " +
+          $"(@TransactionId, @ProductId, @UserId, @ProductionOrderNumber, @QuantityBefore, @QuantityAfter, @TransactionValue , @TransactionType, @CreatedAt)";
+
+        var productTransactionParameters = new
+        {
+          TransactionId = productTransaction.ProductTransactionId,
+          productTransaction.ProductId,
+          productTransaction.UserId,
+          productTransaction.ProductionOrderNumber,
+          productTransaction.QuantityBefore,
+          productTransaction.QuantityAfter,
+          productTransaction.TransactionValue,
+          productTransaction.TransactionType,
+          productTransaction.CreatedAt
+        };
+        var productTransactionQuery = new QueryDTO(
+          productTransactionSql,
+          productTransactionParameters);
+
+        queries.Add(productTransactionQuery);
+
+        foreach (var inventoryTransaction in inventoryTransactions)
+        {
+          if (inventoryTransaction.Inventory is null)
+          {
+            return false;
+          }
+
+          var updateInventorySql = $"UPDATE {_settings.InventoriesTable} " +
+            $"SET available_quantity = @AvailableQuantity, updated_at = @UpdatedAt " +
+            $"WHERE inventory_id = @InventoryId";
+
+          var updateInventoryParameters = new
+          {
+            inventoryTransaction.Inventory.AvailableQuantity,
+            inventoryTransaction.Inventory.UpdatedAt,
+            inventoryTransaction.InventoryId
+          };
+          var updateInventoryQuery = new QueryDTO(
+            updateInventorySql,
+            updateInventoryParameters);
+
+          queries.Add(updateInventoryQuery);
+
+          var inventoryTransactionSql = $"INSERT INTO {_settings.InventoryTransactionsTable} " +
+          $"(transaction_id, inventory_id, user_id, production_order_number, quantity_before, quantity_after, transaction_value, transaction_type, created_at) " +
+          $"VALUES " +
+          $"(@TransactionId, @InventoryId, @UserId, @ProductionOrderNumber, @QuantityBefore, @QuantityAfter, @TransactionValue , @TransactionType, @CreatedAt)";
+
+          var inventoryTransactionParameters = new
+          {
+            TransactionId = inventoryTransaction.InventoryTransactionId,
+            inventoryTransaction.InventoryId,
+            inventoryTransaction.UserId,
+            inventoryTransaction.ProductionOrderNumber,
+            inventoryTransaction.QuantityBefore,
+            inventoryTransaction.QuantityAfter,
+            inventoryTransaction.TransactionValue,
+            inventoryTransaction.TransactionType,
+            inventoryTransaction.CreatedAt
+          };
+          var inventoryTransactionQuery = new QueryDTO(
+            inventoryTransactionSql,
+            inventoryTransactionParameters);
+
+          queries.Add(inventoryTransactionQuery);
+        }
+
+
+        var rowsAffected = await _dataAccess.SaveTransactionData(queries);
+        return rowsAffected > 0;
+
+      }
+      catch
+      {
+        return false;
+      }
+    }
+
     public async Task<bool> SoftDeleteAsync(Product productToDelete)
     {
       try
@@ -257,6 +366,78 @@ namespace Florists.Infrastructure.Persistence
         var rowsAffectd = await _dataAccess.SaveData(sql, parameters);
 
         return rowsAffectd > 0;
+      }
+      catch
+      {
+        return false;
+      }
+    }
+
+    public async Task<bool> UpdateAsync(Product productToUpdate)
+    {
+      try
+      {
+        if (productToUpdate.ProductInventories is null)
+        {
+          return false;
+        }
+
+        var queries = new List<QueryDTO>();
+
+        var deletePreviousProductInventoriesSql = $"DELETE FROM {_settings.ProductInventoriesTable} WHERE product_id = @ProductId";
+        var deletePreviousProductInventoriesParameters = new
+        {
+          productToUpdate.ProductId,
+        };
+
+        var deletePreviousProductInventoriesQuery = new QueryDTO(
+          deletePreviousProductInventoriesSql,
+          deletePreviousProductInventoriesParameters);
+
+        queries.Add(deletePreviousProductInventoriesQuery);
+
+        var updateProductSql = $"UPDATE {_settings.ProductsTable} " +
+          $"SET product_name = @ProductName, unit_price = @UnitPrice, sku = @Sku, category = @Category, updated_at = @UpdatedAt " +
+          $"WHERE product_id = @ProductId";
+        var updateProductParameters = new
+        {
+          productToUpdate.ProductId,
+          productToUpdate.ProductName,
+          productToUpdate.UnitPrice,
+          productToUpdate.Sku,
+          productToUpdate.Category,
+          productToUpdate.UpdatedAt
+        };
+        var updateProductQuery = new QueryDTO(
+          updateProductSql,
+          updateProductParameters);
+
+        queries.Add(updateProductQuery);
+
+        foreach (var productInventory in productToUpdate.ProductInventories)
+        {
+          var createProductInventorySql = $"INSERT INTO {_settings.ProductInventoriesTable} " +
+            $"(product_id, inventory_id, required_quantity, created_at, updated_at) " +
+            $"VALUES " +
+            $"(@ProductId, @InventoryId, @RequiredQuantity, @CreatedAt, @UpdatedAt)";
+          var createProductInventoryParameters = new
+          {
+            productInventory.ProductId,
+            productInventory.InventoryId,
+            productInventory.RequiredQuantity,
+            productInventory.CreatedAt,
+            productInventory.UpdatedAt
+          };
+          var createProductInventoryQuery = new QueryDTO(
+            createProductInventorySql,
+            createProductInventoryParameters);
+
+          queries.Add(createProductInventoryQuery);
+
+
+        }
+        var rowsAffected = await _dataAccess.SaveTransactionData(queries);
+        return rowsAffected > 0;
       }
       catch
       {

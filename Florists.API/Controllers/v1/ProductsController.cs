@@ -1,7 +1,11 @@
 ﻿using Florists.Application.Features.Products.Commands.CreateProduct;
 using Florists.Application.Features.Products.Commands.DeleteProduct;
+using Florists.Application.Features.Products.Commands.EditProduct;
+using Florists.Application.Features.Products.Commands.ProduceProduct;
+using Florists.Application.Features.Products.Commands.SellProducts;
 using Florists.Application.Features.Products.Queries.GetProductById;
 using Florists.Application.Features.Products.Queries.GetProductsByName;
+using Florists.Core.Contracts.Common;
 using Florists.Core.Contracts.Products;
 using MapsterMapper;
 using MediatR;
@@ -37,13 +41,13 @@ namespace Florists.API.Controllers.v1
     }
 
     [HttpPost("edit/{productId}")]
-    public async Task<IActionResult> EditProduct(CreateProductRequest request, Guid productId)
+    public async Task<IActionResult> EditProduct(EditProductRequest request, Guid productId)
     {
-      var command = _mapper.Map<CreateProductCommand>(request);
+      var command = _mapper.Map<EditProductCommand>((request, productId));
 
       var result = await _mediator.Send(command);
 
-      return result.Match(result => Ok(_mapper.Map<ProductResponse>(result)),
+      return result.Match(result => Ok(_mapper.Map<MessageResponse>(result)),
         errors => Problem(errors));
     }
 
@@ -81,24 +85,30 @@ namespace Florists.API.Controllers.v1
     }
 
     [HttpPost("produce")]
-    public async Task<IActionResult> ProduceProduct(CreateProductRequest request, Guid productId)
+    public async Task<IActionResult> ProduceProduct(ProduceProductRequest request)
     {
-      var command = _mapper.Map<CreateProductCommand>(request);
+      var identity = (ClaimsIdentity?)HttpContext.User.Identity;
+      var email = GetEmailFromUserClaims(identity);
+
+      var command = _mapper.Map<ProduceProductCommand>((request, email));
 
       var result = await _mediator.Send(command);
 
-      return result.Match(result => Ok(_mapper.Map<ProductResponse>(result)),
+      return result.Match(result => Ok(_mapper.Map<MessageResponse>(result)),
         errors => Problem(errors));
     }
 
     [HttpPost("sell")]
-    public async Task<IActionResult> SellProducts(CreateProductRequest request, Guid productId)
+    public async Task<IActionResult> SellProducts(SellProductsRequest request)
     {
-      var command = _mapper.Map<CreateProductCommand>(request);
+      var identity = (ClaimsIdentity?)HttpContext.User.Identity;
+      var email = GetEmailFromUserClaims(identity);
+
+      var command = _mapper.Map<SellProductsCommand>((request, email));
 
       var result = await _mediator.Send(command);
 
-      return result.Match(result => Ok(_mapper.Map<ProductResponse>(result)),
+      return result.Match(result => Ok(_mapper.Map<MessageResponse>(result)),
         errors => Problem(errors));
     }
 

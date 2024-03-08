@@ -7,36 +7,40 @@ using Microsoft.Extensions.Options;
 
 namespace Florists.Infrastructure.Persistence
 {
-  public class InventoryTransactionRepository : IInventoryTransactionRepository
+  public class ProductTransactionRepository : IProductTransactionRepository
   {
     private readonly MySqlSettings _settings;
     private readonly IDataAccess _dataAccess;
 
-    public InventoryTransactionRepository(
+    public ProductTransactionRepository(
       IOptions<MySqlSettings> mySqlOptions,
       IDataAccess dataAccess)
     {
       _settings = mySqlOptions.Value;
       _dataAccess = dataAccess;
     }
-
-    public async Task<bool> PurchaseAsync(List<InventoryTransaction> transactions)
+    public async Task<bool> SellAsync(List<ProductTransaction> transactions)
     {
       try
       {
         var queries = new List<QueryDTO>();
         foreach (var transaction in transactions)
         {
-          var createTransactionSql = $"INSERT INTO {_settings.InventoryTransactionsTable} " +
-            $"(transaction_id, inventory_id, user_id, purchase_order_number, quantity_before, quantity_after, transaction_value, transaction_type, created_at) VALUES " +
-            $"(@TransactionId, @InventoryId, @UserId, @PurchaseOrderNumber, @QuantityBefore, @QuantityAfter, @TransactionValue, @TransactionType, @CreatedAt)";
+          if (transaction.Product is null)
+          {
+            return false;
+          }
+
+          var createTransactionSql = $"INSERT INTO {_settings.ProductTransactionsTable} " +
+            $"(transaction_id, product_id, user_id, sale_order_number, quantity_before, quantity_after, transaction_value, transaction_type, created_at) VALUES " +
+            $"(@TransactionId, @ProductId, @UserId, @SaleOrderNumber, @QuantityBefore, @QuantityAfter, @TransactionValue, @TransactionType, @CreatedAt)";
 
           var createTransactionParameters = new
           {
-            TransactionId = transaction.InventoryTransactionId,
-            transaction.InventoryId,
+            TransactionId = transaction.ProductTransactionId,
+            transaction.ProductId,
             transaction.UserId,
-            transaction.PurchaseOrderNumber,
+            transaction.SaleOrderNumber,
             transaction.QuantityBefore,
             transaction.QuantityAfter,
             transaction.TransactionValue,
@@ -49,23 +53,21 @@ namespace Florists.Infrastructure.Persistence
             createTransactionParameters);
           queries.Add(createTransactionQuery);
 
-          var updateInventoriestSql = $"Update {_settings.InventoriesTable} " +
+          var updateProductSql = $"Update {_settings.ProductsTable} " +
             $"SET available_quantity = @AvailableQuantity, updated_at = @UpdatedAt " +
-            $"WHERE inventory_id = @InventoryId";
+            $"WHERE product_id = @ProductId";
 
-          var quantityToPurchase = transaction.QuantityAfter - transaction.QuantityBefore;
-
-          var updateInventoriestParameters = new
+          var updateProductParameters = new
           {
-            transaction.InventoryId,
-            AvailableQuantity = transaction.Inventory!.AvailableQuantity + quantityToPurchase,
-            transaction.Inventory.UpdatedAt
+            transaction.ProductId,
+            transaction.Product.AvailableQuantity,
+            transaction.Product.UpdatedAt
           };
 
-          var updateInventoriestQuery = new QueryDTO(
-            updateInventoriestSql,
-            updateInventoriestParameters);
-          queries.Add(updateInventoriestQuery);
+          var updateProductQuery = new QueryDTO(
+            updateProductSql,
+            updateProductParameters);
+          queries.Add(updateProductQuery);
         }
 
         var rowsAffected = await _dataAccess.SaveTransactionData(queries);

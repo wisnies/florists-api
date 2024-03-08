@@ -1,5 +1,7 @@
-﻿using Florists.Application.Features.Inventories.Commands.EditInventory;
-using Florists.Core.Contracts.Inventories;
+﻿using Florists.Application.Features.Products.Commands.EditProduct;
+using Florists.Application.Features.Products.Commands.ProduceProduct;
+using Florists.Application.Features.Products.Commands.SellProducts;
+using Florists.Core.Contracts.Products;
 using Mapster;
 
 namespace Florists.API.Common.Mapping
@@ -8,8 +10,16 @@ namespace Florists.API.Common.Mapping
   {
     public void Register(TypeAdapterConfig config)
     {
-      config.NewConfig<(EditInventoryRequest request, Guid inventoryId), EditInventoryCommand>()
-        .Map(dest => dest.InventoryId, src => src.inventoryId)
+      config.NewConfig<(EditProductRequest request, Guid productId), EditProductCommand>()
+        .Map(dest => dest.ProductId, src => src.productId)
+        .Map(dest => dest, src => src.request);
+
+      config.NewConfig<(SellProductsRequest request, string email), SellProductsCommand>()
+        .Map(dest => dest.Email, src => src.email)
+        .Map(dest => dest, src => src.request);
+
+      config.NewConfig<(ProduceProductRequest request, string email), ProduceProductCommand>()
+        .Map(dest => dest.Email, src => src.email)
         .Map(dest => dest, src => src.request);
     }
   }

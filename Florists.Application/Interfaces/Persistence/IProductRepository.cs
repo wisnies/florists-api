@@ -9,6 +9,8 @@ namespace Florists.Application.Interfaces.Persistence
     Task<List<Product>?> GetManyByNameAsync(string productName, int offset, int perPage);
     Task<Product?> GetOneByIdAsync(Guid productId, bool withInventories = false);
     Task<Product?> GetOneByNameAsync(string productName, bool withInventories = false);
+    Task<bool> ProduceAsync(ProductTransaction productTransaction, List<InventoryTransaction> inventoryTransactions);
     Task<bool> SoftDeleteAsync(Product productToDelete);
+    Task<bool> UpdateAsync(Product productToUpdate);
   }
 }
