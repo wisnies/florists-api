@@ -54,7 +54,7 @@ namespace Florists.API.Controllers.v1
     }
 
     [HttpGet("inventory/{inventoryId}")]
-    public async Task<IActionResult> GetFlowerById(Guid inventoryId)
+    public async Task<IActionResult> GetInventoryById(Guid inventoryId)
     {
       var query = new GetInventoryByIdQuery(inventoryId);
 
@@ -66,7 +66,7 @@ namespace Florists.API.Controllers.v1
     }
 
     [HttpGet("inventories")]
-    public async Task<IActionResult> GetFlowersByName([FromQuery] GetInventoriesByNameRequest request)
+    public async Task<IActionResult> GetInventoriesByName([FromQuery] GetInventoriesByNameRequest request)
     {
       var query = _mapper.Map<GetInventoriesByNameQuery>(request);
 

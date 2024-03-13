@@ -55,7 +55,7 @@ namespace Florists.Application.Features.Products.Commands.SellProducts
 
         if (product.AvailableQuantity < productToSell.QuantityToSell)
         {
-          return CustomErrors.Products.QuantityToSellUnavailable(index);
+          return CustomErrors.Products.QuantityToSellUnavailable(product.ProductName);
         }
 
         var transaction = new ProductTransaction

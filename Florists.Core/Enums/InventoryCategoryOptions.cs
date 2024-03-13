@@ -2,7 +2,7 @@
 {
   public enum InventoryCategoryOptions
   {
-    Accesory = 1,
+    Accessory = 1,
     Flower = 2,
     Card = 3,
   }

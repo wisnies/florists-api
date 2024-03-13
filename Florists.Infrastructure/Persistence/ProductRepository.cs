@@ -155,7 +155,7 @@ namespace Florists.Infrastructure.Persistence
             UnitPrice = x.product_unit_price,
             Sku = x.sku,
             IsActive = x.is_active,
-            Category = x.category,
+            Category = x.product_category,
             CreatedAt = x.product_created_at,
             UpdatedAt = x.product_updated_at,
           }).FirstOrDefault();

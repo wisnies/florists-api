@@ -10,7 +10,7 @@ namespace Florists.Infrastructure.DTO.Products
     public double product_unit_price { get; set; }
     public string sku { get; set; } = string.Empty;
     public bool is_active { get; set; }
-    public ProductCategoryOptions category { get; set; }
+    public ProductCategoryOptions product_category { get; set; }
     public DateTime product_created_at { get; set; }
     public DateTime product_updated_at { get; set; }
     public Guid inventory_id { get; set; }

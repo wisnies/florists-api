@@ -9,11 +9,11 @@ namespace Florists.Application.Features.Inventories.Queries.GetInventoriesByName
 {
   public class GetFlowersByNameQueryHandler : IRequestHandler<GetInventoriesByNameQuery, ErrorOr<InventoriesResultDTO>>
   {
-    private readonly IInventoryRepository _invenotryRepository;
+    private readonly IInventoryRepository _inventoryRepository;
 
-    public GetFlowersByNameQueryHandler(IInventoryRepository invenotryRepository)
+    public GetFlowersByNameQueryHandler(IInventoryRepository inventoryRepository)
     {
-      _invenotryRepository = invenotryRepository;
+      _inventoryRepository = inventoryRepository;
     }
 
     public async Task<ErrorOr<InventoriesResultDTO>> Handle(
@@ -22,7 +22,7 @@ namespace Florists.Application.Features.Inventories.Queries.GetInventoriesByName
     {
       var offset = query.PerPage * (query.Page - 1);
 
-      var inventories = await _invenotryRepository.GetManyByNameAsync(
+      var inventories = await _inventoryRepository.GetManyByNameAsync(
         query.InventoryName,
         offset,
         query.PerPage);
@@ -33,7 +33,7 @@ namespace Florists.Application.Features.Inventories.Queries.GetInventoriesByName
         return CustomErrors.Database.FetchError;
       }
 
-      var count = await _invenotryRepository.CountByNameAsync(query.InventoryName);
+      var count = await _inventoryRepository.CountByNameAsync(query.InventoryName);
 
       return new InventoriesResultDTO(
         Messages.Database.FetchSuccess,

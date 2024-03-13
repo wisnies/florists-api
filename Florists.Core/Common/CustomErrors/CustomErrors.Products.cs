@@ -16,11 +16,11 @@ namespace Florists.Core.Common.CustomErrors
           code: "NotFound.Product",
           description: Messages.Messages.Products.NotFound);
 
-      public static Error QuantityToSellUnavailable(int index)
+      public static Error QuantityToSellUnavailable(string productName)
       {
         return Error.Validation(
-          code: "Validation.ProductsToSell[" + index + "].QuantityToSell",
-          description: Messages.Messages.Products.QuantityUnavailable);
+          code: "Validation.ProductsToSell",
+          description: Messages.Messages.Products.QuantityUnavailableFor + productName);
       }
     }
   }

@@ -22,8 +22,8 @@ namespace Florists.Application.Features.Products.Commands.ProduceProduct
         .WithMessage(Messages.OrderNumber.IsRequired)
         .MinimumLength(3)
         .WithMessage(Messages.OrderNumber.MinLengthIs + 3)
-        .MaximumLength(16)
-        .WithMessage(Messages.OrderNumber.MaxLengthIs + 16);
+        .MaximumLength(36)
+        .WithMessage(Messages.OrderNumber.MaxLengthIs + 36);
 
       RuleFor(x => x.Email)
         .NotEmpty()
