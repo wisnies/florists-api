@@ -335,7 +335,7 @@ namespace Florists.Infrastructure.Repositories
       }
     }
 
-    public async Task<List<FloristsUser>?> GetManyByLastNameAsync(string lastName, int offset, int perPage)
+    public async Task<List<FloristsUser>?> GetManyByLastNameAsync(int offset, int perPage, string? lastName)
     {
       try
       {
@@ -438,7 +438,7 @@ namespace Florists.Infrastructure.Repositories
       }
     }
 
-    public async Task<int> CountByLastNameAsync(string lastName)
+    public async Task<int> CountByLastNameAsync(string? lastName)
     {
       try
       {

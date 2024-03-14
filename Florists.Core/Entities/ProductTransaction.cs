@@ -12,7 +12,7 @@ namespace Florists.Core.Entities
     public int QuantityBefore { get; set; }
     public int QuantityAfter { get; set; }
     public double TransactionValue { get; set; }
-    public ProductTransactionOptions TransactionType { get; set; }
+    public ProductTransactionTypeOptions TransactionType { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public Product? Product { get; set; }

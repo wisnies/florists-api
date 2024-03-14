@@ -59,7 +59,7 @@ namespace Florists.Application.Features.Products.Commands.ProduceProduct
         QuantityBefore = productToProduce.AvailableQuantity,
         QuantityAfter = productToProduce.AvailableQuantity + command.QuantityToProduce,
         TransactionValue = productToProduce.UnitPrice * command.QuantityToProduce,
-        TransactionType = ProductTransactionOptions.ProduceProduct,
+        TransactionType = ProductTransactionTypeOptions.ProduceProduct,
         CreatedAt = _dateTimeService.UtcNow,
         Product = productToProduce,
       };

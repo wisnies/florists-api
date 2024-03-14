@@ -67,7 +67,7 @@ namespace Florists.Application.Features.Products.Commands.SellProducts
           QuantityBefore = product.AvailableQuantity,
           QuantityAfter = product.AvailableQuantity - productToSell.QuantityToSell,
           TransactionValue = productToSell.QuantityToSell * product.UnitPrice,
-          TransactionType = ProductTransactionOptions.SellProduct,
+          TransactionType = ProductTransactionTypeOptions.SellProduct,
           CreatedAt = _dateTimeService.UtcNow,
           Product = product,
         };

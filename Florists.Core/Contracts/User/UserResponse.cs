@@ -1,8 +1,8 @@
-﻿using Florists.Core.DTO.Common;
+﻿using Florists.Core.DTO.User;
 
 namespace Florists.Core.Contracts.User
 {
-  public record UserResponse(
+    public record UserResponse(
     string Message,
     UserDTO User);
 }

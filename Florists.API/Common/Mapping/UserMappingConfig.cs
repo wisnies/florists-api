@@ -1,6 +1,6 @@
 ﻿using Florists.Application.Features.Users.Commands.EditUser;
+using Florists.Application.Features.Users.Queries.GetUsersByLastName;
 using Florists.Core.Contracts.User;
-using Florists.Core.DTO.Common;
 using Florists.Core.DTO.User;
 using Florists.Core.Entities;
 using Florists.Core.Enums;
@@ -25,6 +25,10 @@ namespace Florists.API.Common.Mapping
       config.NewConfig<UserResultDTO, UserResponse>()
         .Map(dest => dest.User, src => src.User)
         .Map(dest => dest.User.RoleType, src => src.User.Role != null ? src.User.Role.RoleType : RoleTypeOptions.Demo);
+
+      config.NewConfig<GetUsersByLastNameRequest, GetUsersByLastNameQuery>()
+        .Map(dest => dest.Page, src => src.Page <= 0 ? 1 : src.Page)
+        .Map(dest => dest.PerPage, src => src.PerPage <= 0 ? (int)PerPageOptions.Ten : src.PerPage);
     }
   }
 }

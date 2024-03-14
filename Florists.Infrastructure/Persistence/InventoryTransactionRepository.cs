@@ -219,7 +219,9 @@ namespace Florists.Infrastructure.Persistence
       return sql;
     }
 
-    private static string AppendOrderingParams(TransactionsOrderByOptions? orderBy, OrderOptions? order)
+    private static string AppendOrderingParams(
+      TransactionsOrderByOptions? orderBy,
+      OrderOptions? order)
     {
       string sql = "";
       if (orderBy is not null)
@@ -243,7 +245,6 @@ namespace Florists.Infrastructure.Persistence
 
     private static string AppendPaginationParams()
     {
-
       return "LIMIT @PerPage OFFSET @Offset";
     }
   }

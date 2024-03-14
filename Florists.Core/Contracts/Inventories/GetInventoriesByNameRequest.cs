@@ -2,6 +2,6 @@
 {
   public record GetInventoriesByNameRequest(
     string? InventoryName,
-    int Page = 1,
-    int PerPage = 10);
+    int Page,
+    int PerPage);
 }

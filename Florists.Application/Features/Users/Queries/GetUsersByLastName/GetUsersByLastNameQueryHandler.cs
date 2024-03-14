@@ -22,7 +22,10 @@ namespace Florists.Application.Features.Users.Queries.GetUsersByLastName
     {
       var offset = query.PerPage * (query.Page - 1);
 
-      var users = await _userRepository.GetManyByLastNameAsync(query.LastName, offset, query.PerPage);
+      var users = await _userRepository.GetManyByLastNameAsync(
+        offset,
+        query.PerPage,
+        query.LastName);
 
       if (users is null)
       {

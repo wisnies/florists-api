@@ -23,9 +23,9 @@ namespace Florists.Application.Features.Inventories.Queries.GetInventoriesByName
       var offset = query.PerPage * (query.Page - 1);
 
       var inventories = await _inventoryRepository.GetManyByNameAsync(
-        query.InventoryName,
         offset,
-        query.PerPage);
+        query.PerPage,
+        query.InventoryName);
 
 
       if (inventories is null)

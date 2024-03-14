@@ -21,7 +21,7 @@ namespace Florists.Infrastructure.Persistence
       _dataAccess = dataAccess;
     }
 
-    public async Task<int> CountByNameAsync(string inventoryName)
+    public async Task<int> CountByNameAsync(string? inventoryName)
     {
       try
       {
@@ -70,7 +70,7 @@ namespace Florists.Infrastructure.Persistence
       }
     }
 
-    public async Task<List<Inventory>?> GetManyByNameAsync(string inventoryName, int offset, int perPage)
+    public async Task<List<Inventory>?> GetManyByNameAsync(int offset, int perPage, string? inventoryName)
     {
       try
       {

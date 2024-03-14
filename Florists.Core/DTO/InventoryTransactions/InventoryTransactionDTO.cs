@@ -17,6 +17,6 @@ namespace Florists.Core.DTO.InventoryTransactions
     InventoryTransactionTypeOptions TransactionType,
     DateTime CreatedAt,
     DateTime UpdatedAt,
-    InventoryMetadataDTO? Inventory,
-    UserMetadataDTO? User);
+    InventoryTransactionDataDTO? Inventory,
+    UserTransactionDataDTO? User);
 }

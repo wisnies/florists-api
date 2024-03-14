@@ -1,7 +1,9 @@
 ﻿using Florists.Application.Features.Products.Commands.EditProduct;
 using Florists.Application.Features.Products.Commands.ProduceProduct;
 using Florists.Application.Features.Products.Commands.SellProducts;
+using Florists.Application.Features.Products.Queries.GetProductsByName;
 using Florists.Core.Contracts.Products;
+using Florists.Core.Enums;
 using Mapster;
 
 namespace Florists.API.Common.Mapping
@@ -21,6 +23,10 @@ namespace Florists.API.Common.Mapping
       config.NewConfig<(ProduceProductRequest request, string email), ProduceProductCommand>()
         .Map(dest => dest.Email, src => src.email)
         .Map(dest => dest, src => src.request);
+
+      config.NewConfig<GetProductsByNameRequest, GetProductsByNameQuery>()
+        .Map(dest => dest.Page, src => src.Page <= 0 ? 1 : src.Page)
+        .Map(dest => dest.PerPage, src => src.PerPage <= 0 ? (int)PerPageOptions.Ten : src.PerPage);
     }
   }
 }

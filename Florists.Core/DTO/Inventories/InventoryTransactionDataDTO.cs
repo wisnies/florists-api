@@ -2,7 +2,7 @@
 
 namespace Florists.Core.DTO.Inventories
 {
-  public record InventoryMetadataDTO(
+  public record InventoryTransactionDataDTO(
     Guid InventoryId,
     string InventoryName,
     double UnitPrice,

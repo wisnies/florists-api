@@ -21,7 +21,7 @@ namespace Florists.Infrastructure.Persistence
       _dataAccess = dataAccess;
     }
 
-    public async Task<int> CountByNameAsync(string productName)
+    public async Task<int> CountByNameAsync(string? productName)
     {
       try
       {
@@ -94,7 +94,7 @@ namespace Florists.Infrastructure.Persistence
       return rowsAffected > 0;
     }
 
-    public async Task<List<Product>?> GetManyByNameAsync(string productName, int offset, int perPage)
+    public async Task<List<Product>?> GetManyByNameAsync(int offset, int perPage, string? productName)
     {
       try
       {

@@ -5,7 +5,7 @@ using MediatR;
 namespace Florists.Application.Features.Users.Queries.GetUsersByLastName
 {
   public record GetUsersByLastNameQuery(
-    string LastName,
+    string? LastName,
     int Page,
     int PerPage) : IRequest<ErrorOr<UsersResultDTO>>;
 }

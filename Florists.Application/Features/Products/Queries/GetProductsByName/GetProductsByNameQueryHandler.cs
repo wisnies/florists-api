@@ -23,9 +23,9 @@ namespace Florists.Application.Features.Products.Queries.GetProductsByName
       var offset = query.PerPage * (query.Page - 1);
 
       var products = await _productRepository.GetManyByNameAsync(
-        query.ProductName,
         offset,
-        query.PerPage);
+        query.PerPage,
+        query.ProductName);
 
 
       if (products is null)

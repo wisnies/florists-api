@@ -7,7 +7,10 @@ namespace Florists.Application.Interfaces.Persistence
   {
     Task<FloristsUser?> GetOneByEmailAsync(string email);
     Task<FloristsUser?> GetOneByIdAsync(Guid userId);
-    Task<List<FloristsUser>?> GetManyByLastNameAsync(string lastName, int offset, int perPage);
+    Task<List<FloristsUser>?> GetManyByLastNameAsync(
+      int offset,
+      int perPage,
+      string? lastName);
     Task<bool> AuthenticateAsync(FloristsUser user, UserTokensDTO userTokens);
     Task<FloristsUser?> GetOneByRefreshTokenAsync(string refreshToken);
     Task<bool> LogoutAsync(FloristsUser user);
@@ -16,6 +19,6 @@ namespace Florists.Application.Interfaces.Persistence
     Task<bool> Delete(FloristsUser user);
     Task<bool> DeleteSoft(FloristsUser user);
     Task<bool> UpdateAsync(FloristsUser user);
-    Task<int> CountByLastNameAsync(string lastName);
+    Task<int> CountByLastNameAsync(string? lastName);
   }
 }
