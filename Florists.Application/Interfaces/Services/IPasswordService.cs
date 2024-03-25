@@ -2,8 +2,8 @@
 {
   public interface IPasswordService
   {
-    public Task<string> GenerateHashAsync(string password);
-    public Task<bool> IsValidAsync(
+    public string GenerateHash(string password);
+    public bool IsValid(
       string password,
       string passwordHash);
 

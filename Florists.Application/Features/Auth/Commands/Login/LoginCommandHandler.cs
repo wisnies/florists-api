@@ -36,7 +36,7 @@ namespace Florists.Application.Features.Auth.Commands.Login
         return CustomErrors.Auth.InvalidCredentials;
       }
 
-      var isPasswordValid = await _passwordService.IsValidAsync(command.Password, dbUser.PasswordHash);
+      var isPasswordValid = _passwordService.IsValid(command.Password, dbUser.PasswordHash);
 
       if (!isPasswordValid)
       {

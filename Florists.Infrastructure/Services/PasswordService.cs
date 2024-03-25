@@ -5,9 +5,11 @@ namespace Florists.Infrastructure.Services
 {
   public class PasswordService : IPasswordService
   {
-    public async Task<string> GenerateHashAsync(string password)
+    public string GenerateHash(string password)
     {
-      return await Task.FromResult(password);
+      return BCrypt.Net.BCrypt.EnhancedHashPassword(
+        password,
+        13);
     }
 
     public bool IsDigit(string password)
@@ -34,9 +36,9 @@ namespace Florists.Infrastructure.Services
       return regex.IsMatch(password);
     }
 
-    public async Task<bool> IsValidAsync(string password, string passwordHash)
+    public bool IsValid(string password, string passwordHash)
     {
-      return await Task.FromResult(password.Equals(passwordHash));
+      return BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash);
     }
   }
 }

@@ -36,7 +36,7 @@ namespace Florists.Application.Features.Users.Commands.CreateUser
         return CustomErrors.Auth.EmailDuplicate;
       }
 
-      var passwordHash = await _passwordService.GenerateHashAsync(command.Password);
+      var passwordHash = _passwordService.GenerateHash(command.Password);
 
       var user = new FloristsUser
       {
