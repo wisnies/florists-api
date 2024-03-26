@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Florists.Application\Florists.Application.csproj" />
-    <ProjectReference Include="..\..\Florists.Infrastructure\Florists.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\src\Florists.Application\Florists.Application.csproj" />
+    <ProjectReference Include="..\..\..\src\Florists.Infrastructure\Florists.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

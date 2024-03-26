@@ -146,7 +146,7 @@ namespace Florists.Infrastructure.Repositories
     {
       try
       {
-        string sql = $"Update {_settings.UsersTable} " +
+        var sql = $"Update {_settings.UsersTable} " +
       $"SET refresh_token = null, refresh_token_expiration = null " +
       $"WHERE user_id = @UserId AND is_active = true";
 
@@ -169,19 +169,40 @@ namespace Florists.Infrastructure.Repositories
     {
       try
       {
-        string sql = $"Update {_settings.UsersTable} " +
+        var queries = new List<QueryDTO>();
+        var changePasswordSql = $"Update {_settings.UsersTable} " +
       $"SET password_hash = @PasswordHash, is_password_changed = @IsPasswordChanged " +
       $"WHERE user_id = @UserId AND is_active = true";
 
-        var parameters = new
+        var changePasswordParameters = new
         {
           user.UserId,
           user.PasswordHash,
           user.IsPasswordChanged,
         };
 
-        var rowsAffected = await _dataAccess.SaveData(sql, parameters);
+        var changePasswordQuery = new QueryDTO(
+          changePasswordSql,
+          changePasswordParameters);
 
+        queries.Add(changePasswordQuery);
+
+        var logoutSql = $"Update {_settings.UsersTable} " +
+      $"SET refresh_token = null, refresh_token_expiration = null " +
+      $"WHERE user_id = @UserId AND is_active = true";
+
+        var logoutParameters = new
+        {
+          user.UserId,
+        };
+
+        var logoutQuery = new QueryDTO(
+          logoutSql,
+          logoutParameters);
+
+        queries.Add(logoutQuery);
+
+        var rowsAffected = await _dataAccess.SaveTransactionData(queries);
         return rowsAffected > 0;
       }
       catch
