@@ -22,8 +22,4 @@
     <ProjectReference Include="..\..\..\src\Florists.Infrastructure\Florists.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Inventories\Commands\TestUtils\" />
-  </ItemGroup>
-
 </Project>

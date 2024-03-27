@@ -2,14 +2,14 @@
 using Florists.Application.Interfaces.Persistence;
 using Florists.Application.Interfaces.Services;
 using Florists.Application.UnitTests.Auth.Commands.TestUtils;
-using Florists.Application.UnitTests.TestUtils.Auth.Extenstions;
+using Florists.Application.UnitTests.TestUtils.Extenstions.Auth;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Entities;
 using Moq;
 
 namespace Florists.Application.UnitTests.Auth.Commands.Login
 {
-  public class LoginCommandHandlerTests
+    public class LoginCommandHandlerTests
   {
     private LoginCommandHandler _handler;
     private Mock<IUserRepository> _mockUserRepository;

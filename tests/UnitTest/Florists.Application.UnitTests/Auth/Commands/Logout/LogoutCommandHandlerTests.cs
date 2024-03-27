@@ -1,14 +1,14 @@
 ﻿using Florists.Application.Features.Auth.Commands.Logout;
 using Florists.Application.Interfaces.Persistence;
 using Florists.Application.UnitTests.Auth.Commands.TestUtils;
-using Florists.Application.UnitTests.TestUtils.Auth.Extenstions;
+using Florists.Application.UnitTests.TestUtils.Extenstions.Auth;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Entities;
 using Moq;
 
 namespace Florists.Application.UnitTests.Auth.Commands.Logout
 {
-  public class LogoutCommandHandlerTests
+    public class LogoutCommandHandlerTests
   {
     private LogoutCommandHandler _handler;
     private Mock<IUserRepository> _mockUserRepository;

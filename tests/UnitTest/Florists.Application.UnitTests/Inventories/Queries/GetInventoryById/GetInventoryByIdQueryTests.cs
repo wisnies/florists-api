@@ -1,14 +1,14 @@
 ﻿using Florists.Application.Features.Inventories.Queries.GetInventoryById;
 using Florists.Application.Interfaces.Persistence;
 using Florists.Application.UnitTests.Inventories.Queries.TestUtils;
-using Florists.Application.UnitTests.TestUtils.Inventories.Extenstions;
+using Florists.Application.UnitTests.TestUtils.Extenstions.Inventories;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Entities;
 using Moq;
 
 namespace Florists.Application.UnitTests.Inventories.Queries.GetInventoryById
 {
-  public class GetInventoryByIdQueryTests
+    public class GetInventoryByIdQueryTests
   {
     private GetInventoryByIdQueryHandler _handler;
     private Mock<IInventoryRepository> _mockInventoryRepository;

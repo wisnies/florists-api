@@ -2,7 +2,7 @@
 using Florists.Application.Interfaces.Persistence;
 using Florists.Application.UnitTests.Inventories.Queries.TestUtils;
 using Florists.Application.UnitTests.TestUtils.Constants;
-using Florists.Application.UnitTests.TestUtils.Inventories.Extenstions;
+using Florists.Application.UnitTests.TestUtils.Extenstions.Inventories;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Entities;
 using Moq;
@@ -21,67 +21,67 @@ namespace Florists.Application.UnitTests.Inventories.Queries.GetInventoriesByNam
       _handler = new(_mockInventoryRepository.Object);
     }
 
-    [TestCase(1)]
-    [TestCase(12)]
-    [TestCase(14)]
-    [TestCase(5)]
-    [TestCase(0)]
-    public async Task HandleGetInventoriesByName_WithPerPageParameter_ShouldReturnInventoriesResultDTOWithValidLength(int perPage)
+    [TestCase(1, 1)]
+    [TestCase(2, 2)]
+    [TestCase(5, 1)]
+    [TestCase(3, 10)]
+    [TestCase(123, 1)]
+    public async Task HandleGetInventoriesByName_WhenValidQuery_ShouldReturnInventoriesResultDTOWithValidCollectionLength(int perPage, int page)
     {
-      var getInventoriesByNameQuery = GetInventoriesByNameUtils.CreateQuery(perPage: perPage);
-      var dbInventories = GetInventoriesByNameUtils.CreateInventories(perPage);
+      var query = GetInventoriesByNameUtils.CreateQuery(perPage, page);
+      var offset = query.PerPage * (query.Page - 1);
+      var dbInventories = GetInventoriesByNameUtils.CreateInventories(offset, perPage);
 
-      var offset = getInventoriesByNameQuery.PerPage * (getInventoriesByNameQuery.Page - 1);
 
       _mockInventoryRepository
         .Setup(m => m.GetManyByNameAsync(
           offset,
-          getInventoriesByNameQuery.PerPage,
-          getInventoriesByNameQuery.InventoryName))
+          query.PerPage,
+          query.InventoryName))
         .Returns(Task.FromResult((List<Inventory>?)dbInventories));
 
       _mockInventoryRepository
-        .Setup(m => m.CountByNameAsync(getInventoriesByNameQuery.InventoryName))
+        .Setup(m => m.CountByNameAsync(query.InventoryName))
         .Returns(Task.FromResult(Constants.Inventories.InventoriesCount));
 
       var result = await _handler.Handle(
-        getInventoriesByNameQuery,
+        query,
         default);
 
       Assert.Multiple(() =>
       {
         Assert.That(result.IsError, Is.False);
-        result.Value.ValidateCreatedFrom(getInventoriesByNameQuery);
+        result.Value.ValidateCreatedFrom(query, offset);
 
         _mockInventoryRepository
         .Verify(m => m.GetManyByNameAsync(
           offset,
-          getInventoriesByNameQuery.PerPage,
-          getInventoriesByNameQuery.InventoryName),
+          query.PerPage,
+          query.InventoryName),
           Times.Once());
 
         _mockInventoryRepository
-        .Verify(m => m.CountByNameAsync(getInventoriesByNameQuery.InventoryName),
+        .Verify(m => m.CountByNameAsync(query.InventoryName),
           Times.Once());
       });
     }
 
     [Test]
-    public async Task HandleGetInventoriesByName_WhenUnableToFetch_ShouldReturnDatabaseFetchError()
+    public async Task HandleGetInventoriesByName_WhenUnableToFetchWithValidQuery_ShouldReturnDatabaseFetchError()
     {
-      var getInventoriesByNameQuery = GetInventoriesByNameUtils.CreateQuery();
+      var query = GetInventoriesByNameUtils.CreateQuery();
 
-      var offset = getInventoriesByNameQuery.PerPage * (getInventoriesByNameQuery.Page - 1);
+      var offset = query.PerPage * (query.Page - 1);
 
       _mockInventoryRepository
         .Setup(m => m.GetManyByNameAsync(
           offset,
-          getInventoriesByNameQuery.PerPage,
-          getInventoriesByNameQuery.InventoryName))
+          query.PerPage,
+          query.InventoryName))
         .Returns(Task.FromResult((List<Inventory>?)null));
 
       var result = await _handler.Handle(
-        getInventoriesByNameQuery,
+        query,
         default);
 
       Assert.Multiple(() =>
@@ -92,8 +92,8 @@ namespace Florists.Application.UnitTests.Inventories.Queries.GetInventoriesByNam
         _mockInventoryRepository
         .Verify(m => m.GetManyByNameAsync(
           offset,
-          getInventoriesByNameQuery.PerPage,
-          getInventoriesByNameQuery.InventoryName),
+          query.PerPage,
+          query.InventoryName),
           Times.Once());
       });
     }

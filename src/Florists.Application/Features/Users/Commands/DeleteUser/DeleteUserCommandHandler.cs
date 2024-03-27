@@ -35,6 +35,8 @@ namespace Florists.Application.Features.Users.Commands.DeleteUser
 
       var success = await _userRepository.DeleteSoft(userToDelete);
 
+      userToDelete.IsActive = false;
+
       if (!success)
       {
         return CustomErrors.Database.SaveError;

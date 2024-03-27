@@ -1,16 +1,16 @@
 ﻿using Florists.Application.Features.Inventories.Commands.EditInventory;
 using Florists.Application.Interfaces.Persistence;
 using Florists.Application.Interfaces.Services;
-using Florists.Application.UnitTests.Inventories.Queries.TestUtils;
+using Florists.Application.UnitTests.Inventories.Commands.TestUtils;
 using Florists.Application.UnitTests.TestUtils.Constants;
-using Florists.Application.UnitTests.TestUtils.Inventories.Extenstions;
+using Florists.Application.UnitTests.TestUtils.Extenstions.Inventories;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Entities;
 using Moq;
 
 namespace Florists.Application.UnitTests.Inventories.Commands.EditInventory
 {
-  public class EditInventoryCommandTests
+    public class EditInventoryCommandTests
   {
     private EditInventoryCommandHandler _handler;
     private Mock<IInventoryRepository> _mockInventoryRepository;

@@ -2,15 +2,15 @@
 using Florists.Application.Interfaces.Persistence;
 using Florists.Application.Interfaces.Services;
 using Florists.Application.UnitTests.Auth.Commands.TestUtils;
-using Florists.Application.UnitTests.TestUtils.Auth.Extenstions;
 using Florists.Application.UnitTests.TestUtils.Constants;
+using Florists.Application.UnitTests.TestUtils.Extenstions.Auth;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Entities;
 using Moq;
 
 namespace Florists.Application.UnitTests.Auth.Commands.ChangePassword
 {
-  public class ChangePasswordCommandTests
+    public class ChangePasswordCommandTests
   {
     private ChangePasswordCommandHandler _handler;
     private Mock<IUserRepository> _mockUserRepository;

@@ -5,7 +5,7 @@ using Florists.Application.Features.Inventories.Queries.GetInventoryById;
 using Florists.Core.Common.Messages;
 using Florists.Core.DTO.Inventories;
 
-namespace Florists.Application.UnitTests.TestUtils.Inventories.Extenstions
+namespace Florists.Application.UnitTests.TestUtils.Extenstions.Inventories
 {
   public static partial class InventoryExtensions
   {
@@ -22,19 +22,25 @@ namespace Florists.Application.UnitTests.TestUtils.Inventories.Extenstions
       });
     }
 
-    public static void ValidateCreatedFrom(this InventoriesResultDTO result, GetInventoriesByNameQuery query)
+    public static void ValidateCreatedFrom(this InventoriesResultDTO result, GetInventoriesByNameQuery query, int offset)
     {
       Assert.Multiple(() =>
       {
         Assert.That(result.Message, Is.EqualTo(Messages.Database.FetchSuccess));
         Assert.That(result.Count, Is.EqualTo(Constants.Constants.Inventories.InventoriesCount));
-        Assert.That(result.Inventories, Has.Count.EqualTo(query.PerPage));
+        Assert.That(result.Inventories, Has.Count.LessThanOrEqualTo(query.PerPage));
+
+        if (query.PerPage >= Constants.Constants.Inventories.InventoriesCount)
+        {
+          Assert.That(result.Inventories, Has.Count.AtLeast(Constants.Constants.Inventories.InventoriesCount));
+        }
 
         for (int i = 0; i < result.Inventories.Count; i++)
         {
+          var n = offset + i;
           Assert.That(
             result.Inventories[i].InventoryName,
-            Is.EqualTo(Constants.Constants.Inventories.InventoryNameFromIndex(i)));
+            Is.EqualTo(Constants.Constants.Inventories.InventoryNameFromIndex(n)));
         }
 
       });

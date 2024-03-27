@@ -2,8 +2,8 @@
 using Florists.Application.Interfaces.Persistence;
 using Florists.Application.Interfaces.Services;
 using Florists.Application.UnitTests.Auth.Commands.TestUtils;
-using Florists.Application.UnitTests.TestUtils.Auth.Extenstions;
 using Florists.Application.UnitTests.TestUtils.Constants;
+using Florists.Application.UnitTests.TestUtils.Extenstions.Auth;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Entities;
 using Moq;
@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace Florists.Application.UnitTests.Auth.Commands.RefreshToken
 {
-  public class RefreshTokenCommandTests
+    public class RefreshTokenCommandTests
   {
     private RefreshTokenCommandHandler _handler;
     private Mock<IUserRepository> _mockUserRepository;

@@ -14,11 +14,16 @@ namespace Florists.Application.UnitTests.Inventories.Queries.TestUtils
         perPage);
     }
 
-    public static List<Inventory> CreateInventories(int count = 10)
+    public static List<Inventory> CreateInventories(int offset, int perPage)
     {
-      var inventories = new List<Inventory>(count);
+      var inventories = new List<Inventory>();
 
-      for (int i = 0; i < count; i++)
+      var total = perPage >= Constants.Inventories.InventoriesCount ?
+        Constants.Inventories.InventoriesCount :
+        perPage;
+      total += offset;
+
+      for (int i = offset; i < total; i++)
       {
         var inventory = new Inventory
         {
