@@ -3,12 +3,12 @@ using Florists.Application.Interfaces.Persistence;
 using Florists.Application.Interfaces.Services;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Common.Messages;
-using Florists.Core.DTO.Common;
+using Florists.Core.DTO.Inventories;
 using MediatR;
 
 namespace Florists.Application.Features.Inventories.Commands.EditInventory
 {
-  public class EditInventoryCommandHandler : IRequestHandler<EditInventoryCommand, ErrorOr<MessageResultDTO>>
+  public class EditInventoryCommandHandler : IRequestHandler<EditInventoryCommand, ErrorOr<InventoryResultDTO>>
   {
     private readonly IInventoryRepository _inventoryRepository;
     private readonly IDateTimeService _dateTimeService;
@@ -21,7 +21,7 @@ namespace Florists.Application.Features.Inventories.Commands.EditInventory
       _dateTimeService = dateTimeService;
     }
 
-    public async Task<ErrorOr<MessageResultDTO>> Handle(
+    public async Task<ErrorOr<InventoryResultDTO>> Handle(
       EditInventoryCommand command,
       CancellationToken cancellationToken)
     {
@@ -52,9 +52,9 @@ namespace Florists.Application.Features.Inventories.Commands.EditInventory
         return CustomErrors.Database.SaveError;
       }
 
-      return new MessageResultDTO(
-        true,
-        Messages.Database.UpdateSuccess);
+      return new InventoryResultDTO(
+        Messages.Database.SaveSuccess,
+        inventoryToUpdate);
     }
   }
 }

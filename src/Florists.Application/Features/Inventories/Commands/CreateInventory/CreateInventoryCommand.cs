@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using Florists.Core.DTO.Common;
+using Florists.Core.DTO.Inventories;
 using Florists.Core.Enums;
 using MediatR;
 
@@ -9,5 +9,5 @@ namespace Florists.Application.Features.Inventories.Commands.CreateInventory
     string InventoryName,
     int AvailableQuantity,
     double UnitPrice,
-    InventoryCategoryOptions Category) : IRequest<ErrorOr<MessageResultDTO>>;
+    InventoryCategoryOptions Category) : IRequest<ErrorOr<InventoryResultDTO>>;
 }

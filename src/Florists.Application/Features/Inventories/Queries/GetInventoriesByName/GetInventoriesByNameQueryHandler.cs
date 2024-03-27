@@ -7,11 +7,11 @@ using MediatR;
 
 namespace Florists.Application.Features.Inventories.Queries.GetInventoriesByName
 {
-  public class GetFlowersByNameQueryHandler : IRequestHandler<GetInventoriesByNameQuery, ErrorOr<InventoriesResultDTO>>
+  public class GetInventoriesByNameQueryHandler : IRequestHandler<GetInventoriesByNameQuery, ErrorOr<InventoriesResultDTO>>
   {
     private readonly IInventoryRepository _inventoryRepository;
 
-    public GetFlowersByNameQueryHandler(IInventoryRepository inventoryRepository)
+    public GetInventoriesByNameQueryHandler(IInventoryRepository inventoryRepository)
     {
       _inventoryRepository = inventoryRepository;
     }

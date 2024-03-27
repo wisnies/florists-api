@@ -2,7 +2,6 @@
 using Florists.Application.Features.Auth.Commands.Login;
 using Florists.Application.Features.Auth.Commands.Logout;
 using Florists.Application.Features.Auth.Commands.RefreshToken;
-using Florists.Application.UnitTests.Auth.Commands.TestUtils;
 using Florists.Core.Common.Messages;
 using Florists.Core.DTO.Auth;
 using Florists.Core.DTO.Common;
@@ -13,8 +12,6 @@ namespace Florists.Application.UnitTests.TestUtils.Auth.Extenstions
   {
     public static void ValidateCreatedFrom(this AuthResultDTO result, LoginCommand command)
     {
-      var dbUser = LoginCommandUtils.CreateUser();
-      var userTokensDTO = LoginCommandUtils.CreateUserTokensDTO();
       Assert.Multiple(() =>
       {
         Assert.That(result.User.UserId, Is.EqualTo(Guid.Parse(Constants.Constants.Auth.UserId)));
@@ -53,8 +50,6 @@ namespace Florists.Application.UnitTests.TestUtils.Auth.Extenstions
 
     public static void ValidateCreatedFrom(this AuthResultDTO result, RefreshTokenCommand command)
     {
-      var dbUser = LoginCommandUtils.CreateUser();
-      var userTokensDTO = LoginCommandUtils.CreateUserTokensDTO();
       Assert.Multiple(() =>
       {
         Assert.That(result.User.UserId, Is.EqualTo(Guid.Parse(Constants.Constants.Auth.UserId)));
