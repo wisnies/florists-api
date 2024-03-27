@@ -25,6 +25,13 @@ namespace Florists.Application.UnitTests.TestUtils.Constants
       public const string Email = "purchase@email.com";
       public const string PurchaseOrderNumber = "purchase order number";
 
+      public const string UserId = "E4C92608-6377-40F0-AE37-55D20525CCD9";
+      public const string FirstName = "first";
+      public const string LastName = "last";
+      public const RoleTypeOptions RoleType = RoleTypeOptions.Demo;
+
+      public const string RoleId = "3E971209-5B1C-4267-8029-49FA741F747E";
+
       public static string InventoryIdFromIndex(int index) => $"03950F56-120D-4A2F-8418-1978ED8B{index:0000}";
 
       public static string InventoryNameFromIndex(int index) => $"{InventoryName} {index}";

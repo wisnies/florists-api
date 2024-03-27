@@ -3,14 +3,14 @@ using Florists.Application.Interfaces.Persistence;
 using Florists.Application.Interfaces.Services;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Common.Messages;
-using Florists.Core.DTO.Common;
+using Florists.Core.DTO.InventoryTransactions;
 using Florists.Core.Entities;
 using Florists.Core.Enums;
 using MediatR;
 
 namespace Florists.Application.Features.Inventories.Commands.PurchaseInventories
 {
-  public class PurchaseInventoriesCommandHandler : IRequestHandler<PurchaseInventoriesCommand, ErrorOr<MessageResultDTO>>
+  public class PurchaseInventoriesCommandHandler : IRequestHandler<PurchaseInventoriesCommand, ErrorOr<InventoryTransactionsResultDTO>>
   {
     private readonly IInventoryRepository _inventoryRepository;
     private readonly IInventoryTransactionRepository _inventoryTransactionRepository;
@@ -29,7 +29,7 @@ namespace Florists.Application.Features.Inventories.Commands.PurchaseInventories
       _inventoryTransactionRepository = inventoryTransactionRepository;
     }
 
-    public async Task<ErrorOr<MessageResultDTO>> Handle(
+    public async Task<ErrorOr<InventoryTransactionsResultDTO>> Handle(
       PurchaseInventoriesCommand command,
       CancellationToken cancellationToken)
     {
@@ -51,6 +51,10 @@ namespace Florists.Application.Features.Inventories.Commands.PurchaseInventories
           return CustomErrors.Inventories.NotFound;
         }
 
+        int quantityBefore = inventory.AvailableQuantity;
+        int quantityAfter = inventory.AvailableQuantity + dto.QuantityToPurchase;
+
+        inventory.AvailableQuantity = quantityAfter;
         inventory.UpdatedAt = _dateTimeService.UtcNow;
 
         var transaction = new InventoryTransaction
@@ -59,8 +63,8 @@ namespace Florists.Application.Features.Inventories.Commands.PurchaseInventories
           InventoryId = inventory.InventoryId,
           UserId = user.UserId,
           PurchaseOrderNumber = command.PurchaseOrderNumber,
-          QuantityBefore = inventory.AvailableQuantity,
-          QuantityAfter = inventory.AvailableQuantity + dto.QuantityToPurchase,
+          QuantityBefore = quantityBefore,
+          QuantityAfter = quantityAfter,
           TransactionValue = inventory.UnitPrice * dto.QuantityToPurchase,
           TransactionType = InventoryTransactionTypeOptions.PurchaseInventory,
           CreatedAt = _dateTimeService.UtcNow,
@@ -77,9 +81,10 @@ namespace Florists.Application.Features.Inventories.Commands.PurchaseInventories
         return CustomErrors.Database.SaveError;
       }
 
-      return new MessageResultDTO(
-        true,
-        Messages.Database.SaveSuccess);
+      return new InventoryTransactionsResultDTO(
+        Messages.Database.SaveSuccess,
+        transactions.Count,
+        transactions);
     }
   }
 }

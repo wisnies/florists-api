@@ -157,12 +157,11 @@ namespace Florists.Infrastructure.Persistence
             $"SET available_quantity = @AvailableQuantity, updated_at = @UpdatedAt " +
             $"WHERE inventory_id = @InventoryId";
 
-          var quantityToPurchase = transaction.QuantityAfter - transaction.QuantityBefore;
 
           var updateInventoriestParameters = new
           {
             transaction.InventoryId,
-            AvailableQuantity = transaction.Inventory!.AvailableQuantity + quantityToPurchase,
+            AvailableQuantity = transaction.Inventory!.AvailableQuantity,
             transaction.Inventory.UpdatedAt
           };
 
