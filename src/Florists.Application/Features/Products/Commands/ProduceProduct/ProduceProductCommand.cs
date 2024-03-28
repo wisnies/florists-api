@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using Florists.Core.DTO.Common;
+using Florists.Core.DTO.Products;
 using MediatR;
 
 namespace Florists.Application.Features.Products.Commands.ProduceProduct
@@ -8,5 +8,5 @@ namespace Florists.Application.Features.Products.Commands.ProduceProduct
     Guid ProductId,
     int QuantityToProduce,
     string ProductionOrderNumber,
-    string Email) : IRequest<ErrorOr<MessageResultDTO>>;
+    string Email) : IRequest<ErrorOr<ProduceProductResultDTO>>;
 }

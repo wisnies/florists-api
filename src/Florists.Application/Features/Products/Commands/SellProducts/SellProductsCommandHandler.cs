@@ -3,14 +3,14 @@ using Florists.Application.Interfaces.Persistence;
 using Florists.Application.Interfaces.Services;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Common.Messages;
-using Florists.Core.DTO.Common;
+using Florists.Core.DTO.ProductTransactions;
 using Florists.Core.Entities;
 using Florists.Core.Enums;
 using MediatR;
 
 namespace Florists.Application.Features.Products.Commands.SellProducts
 {
-  public class SellProductsCommandHandler : IRequestHandler<SellProductsCommand, ErrorOr<MessageResultDTO>>
+  public class SellProductsCommandHandler : IRequestHandler<SellProductsCommand, ErrorOr<ProductTransactionsResultDTO>>
   {
     private readonly IProductRepository _productRepository;
     private readonly IProductTransactionRepository _productTransactionRepository;
@@ -29,7 +29,7 @@ namespace Florists.Application.Features.Products.Commands.SellProducts
       _userRepository = userRepository;
     }
 
-    public async Task<ErrorOr<MessageResultDTO>> Handle(
+    public async Task<ErrorOr<ProductTransactionsResultDTO>> Handle(
       SellProductsCommand command,
       CancellationToken cancellationToken)
     {
@@ -42,7 +42,6 @@ namespace Florists.Application.Features.Products.Commands.SellProducts
 
       var transactions = new List<ProductTransaction>();
 
-      var index = 0;
       foreach (var productToSell in command.ProductsToSell)
       {
         var product = await _productRepository
@@ -58,25 +57,27 @@ namespace Florists.Application.Features.Products.Commands.SellProducts
           return CustomErrors.Products.QuantityToSellUnavailable(product.ProductName);
         }
 
+        var quantityBefore = product.AvailableQuantity;
+        var quantityAfter = product.AvailableQuantity - productToSell.QuantityToSell;
+
+        product.AvailableQuantity = quantityAfter;
+        product.UpdatedAt = _dateTimeService.UtcNow;
+
         var transaction = new ProductTransaction
         {
           ProductTransactionId = Guid.NewGuid(),
           ProductId = product.ProductId,
           UserId = user.UserId,
           SaleOrderNumber = command.SaleOrderNumber,
-          QuantityBefore = product.AvailableQuantity,
-          QuantityAfter = product.AvailableQuantity - productToSell.QuantityToSell,
+          QuantityBefore = quantityBefore,
+          QuantityAfter = quantityAfter,
           TransactionValue = productToSell.QuantityToSell * product.UnitPrice,
           TransactionType = ProductTransactionTypeOptions.SellProduct,
           CreatedAt = _dateTimeService.UtcNow,
           Product = product,
         };
 
-        product.AvailableQuantity -= productToSell.QuantityToSell;
-        product.UpdatedAt = _dateTimeService.UtcNow;
-
         transactions.Add(transaction);
-        index++;
       }
 
       var success = await _productTransactionRepository.SellAsync(transactions);
@@ -86,9 +87,10 @@ namespace Florists.Application.Features.Products.Commands.SellProducts
         return CustomErrors.Database.SaveError;
       }
 
-      return new MessageResultDTO(
-        true,
-        Messages.Database.SaveSuccess);
+      return new ProductTransactionsResultDTO(
+        Messages.Database.SaveSuccess,
+        transactions.Count,
+        transactions);
     }
   }
 }

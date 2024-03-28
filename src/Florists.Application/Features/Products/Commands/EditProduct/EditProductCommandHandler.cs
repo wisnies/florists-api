@@ -3,13 +3,13 @@ using Florists.Application.Interfaces.Persistence;
 using Florists.Application.Interfaces.Services;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Common.Messages;
-using Florists.Core.DTO.Common;
+using Florists.Core.DTO.Products;
 using Florists.Core.Entities;
 using MediatR;
 
 namespace Florists.Application.Features.Products.Commands.EditProduct
 {
-  public class EditProductCommandHandler : IRequestHandler<EditProductCommand, ErrorOr<MessageResultDTO>>
+  public class EditProductCommandHandler : IRequestHandler<EditProductCommand, ErrorOr<ProductResultDTO>>
   {
     private readonly IProductRepository _productRepository;
     private readonly IDateTimeService _dateTimeService;
@@ -22,7 +22,7 @@ namespace Florists.Application.Features.Products.Commands.EditProduct
       _dateTimeService = dateTimeService;
     }
 
-    public async Task<ErrorOr<MessageResultDTO>> Handle(
+    public async Task<ErrorOr<ProductResultDTO>> Handle(
       EditProductCommand command,
       CancellationToken cancellationToken)
     {
@@ -72,9 +72,9 @@ namespace Florists.Application.Features.Products.Commands.EditProduct
         return CustomErrors.Database.SaveError;
       }
 
-      return new MessageResultDTO(
-        true,
-        Messages.Database.UpdateSuccess);
+      return new ProductResultDTO(
+        Messages.Database.UpdateSuccess,
+        productToUpdate);
     }
   }
 }

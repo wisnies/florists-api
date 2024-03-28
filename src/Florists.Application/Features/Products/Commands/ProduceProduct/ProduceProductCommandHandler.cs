@@ -3,14 +3,14 @@ using Florists.Application.Interfaces.Persistence;
 using Florists.Application.Interfaces.Services;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Common.Messages;
-using Florists.Core.DTO.Common;
+using Florists.Core.DTO.Products;
 using Florists.Core.Entities;
 using Florists.Core.Enums;
 using MediatR;
 
 namespace Florists.Application.Features.Products.Commands.ProduceProduct
 {
-  public class ProduceProductCommandHandler : IRequestHandler<ProduceProductCommand, ErrorOr<MessageResultDTO>>
+  public class ProduceProductCommandHandler : IRequestHandler<ProduceProductCommand, ErrorOr<ProduceProductResultDTO>>
   {
     private readonly IProductRepository _productRepository;
     private readonly IUserRepository _userRepository;
@@ -26,7 +26,7 @@ namespace Florists.Application.Features.Products.Commands.ProduceProduct
       _dateTimeService = dateTimeService;
     }
 
-    public async Task<ErrorOr<MessageResultDTO>> Handle(
+    public async Task<ErrorOr<ProduceProductResultDTO>> Handle(
       ProduceProductCommand command,
       CancellationToken cancellationToken)
     {
@@ -50,22 +50,27 @@ namespace Florists.Application.Features.Products.Commands.ProduceProduct
         return CustomErrors.Database.FetchError;
       }
 
+      var quantityBefore = productToProduce.AvailableQuantity;
+      var quantityAfter = productToProduce.AvailableQuantity + command.QuantityToProduce;
+
+      productToProduce.AvailableQuantity = quantityAfter;
+      productToProduce.UpdatedAt = _dateTimeService.UtcNow;
+
       var productTransaction = new ProductTransaction
       {
         ProductTransactionId = Guid.NewGuid(),
         ProductId = productToProduce.ProductId,
         UserId = user.UserId,
         ProductionOrderNumber = command.ProductionOrderNumber,
-        QuantityBefore = productToProduce.AvailableQuantity,
-        QuantityAfter = productToProduce.AvailableQuantity + command.QuantityToProduce,
+        QuantityBefore = quantityBefore,
+        QuantityAfter = quantityAfter,
         TransactionValue = productToProduce.UnitPrice * command.QuantityToProduce,
         TransactionType = ProductTransactionTypeOptions.ProduceProduct,
         CreatedAt = _dateTimeService.UtcNow,
         Product = productToProduce,
       };
 
-      productToProduce.AvailableQuantity += command.QuantityToProduce;
-      productToProduce.UpdatedAt = _dateTimeService.UtcNow;
+
 
       var inventoryTransactions = new List<InventoryTransaction>();
 
@@ -76,22 +81,25 @@ namespace Florists.Application.Features.Products.Commands.ProduceProduct
           return CustomErrors.Inventories.InsufficientQuantity(productInventory.Inventory.InventoryName);
         }
 
+        var inventoryQuantityBefore = productInventory.Inventory.AvailableQuantity;
+        var inventoryQuantityAfter = productInventory.Inventory.AvailableQuantity - (productInventory.RequiredQuantity * command.QuantityToProduce);
+        productInventory.Inventory.AvailableQuantity = quantityAfter;
+        productInventory.Inventory.UpdatedAt = _dateTimeService.UtcNow;
+
+
         var inventoryTransaction = new InventoryTransaction
         {
           InventoryTransactionId = Guid.NewGuid(),
           InventoryId = productInventory.InventoryId,
           UserId = user.UserId,
           ProductionOrderNumber = command.ProductionOrderNumber,
-          QuantityBefore = productInventory.Inventory.AvailableQuantity,
-          QuantityAfter = productInventory.Inventory.AvailableQuantity - (productInventory.RequiredQuantity * command.QuantityToProduce),
+          QuantityBefore = inventoryQuantityBefore,
+          QuantityAfter = inventoryQuantityAfter,
           TransactionValue = productInventory.Inventory.UnitPrice * (productInventory.RequiredQuantity * command.QuantityToProduce),
           TransactionType = InventoryTransactionTypeOptions.ProduceProduct,
           CreatedAt = _dateTimeService.UtcNow,
           Inventory = productInventory.Inventory
         };
-
-        productInventory.Inventory.AvailableQuantity -= (productInventory.RequiredQuantity * command.QuantityToProduce);
-        productInventory.Inventory.UpdatedAt = _dateTimeService.UtcNow;
 
         inventoryTransactions.Add(inventoryTransaction);
       }
@@ -103,9 +111,10 @@ namespace Florists.Application.Features.Products.Commands.ProduceProduct
         return CustomErrors.Database.SaveError;
       }
 
-      return new MessageResultDTO(
-        true,
-        Messages.Database.SaveSuccess);
+      return new ProduceProductResultDTO(
+        Messages.Database.SaveSuccess,
+        productTransaction,
+        inventoryTransactions);
     }
   }
 }

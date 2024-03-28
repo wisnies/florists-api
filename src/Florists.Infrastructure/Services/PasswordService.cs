@@ -9,7 +9,7 @@ namespace Florists.Infrastructure.Services
     {
       return BCrypt.Net.BCrypt.EnhancedHashPassword(
         password,
-        13);
+          13);
     }
 
     public bool IsDigit(string password)

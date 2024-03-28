@@ -355,12 +355,13 @@ namespace Florists.Infrastructure.Persistence
       {
 
         var sql = $"UPDATE {_settings.ProductsTable} " +
-          $"SET is_active = false, updated_at = @UpdatedAt " +
+          $"SET is_active = @IsActive, updated_at = @UpdatedAt " +
           $"WHERE product_id = @ProductId";
         var parameters = new
         {
           productToDelete.ProductId,
-          productToDelete.UpdatedAt
+          productToDelete.UpdatedAt,
+          productToDelete.IsActive
         };
 
         var rowsAffectd = await _dataAccess.SaveData(sql, parameters);

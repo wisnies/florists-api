@@ -32,6 +32,7 @@ namespace Florists.Application.Features.Products.Commands.DeleteProduct
       }
 
       productToDelete.UpdatedAt = _dateTimeService.UtcNow;
+      productToDelete.IsActive = false;
 
       var success = await _productRepository.SoftDeleteAsync(productToDelete);
 
