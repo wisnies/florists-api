@@ -1,34 +1,35 @@
-﻿using Florists.Application.Features.InventoryTransactions.Queries.GetInventoryTransactions;
+﻿using Florists.Application.Features.ProductTransactions.Queries.GetProductTransactions;
 using Florists.Application.Interfaces.Persistence;
-using Florists.Application.UnitTests.InventoryTransactions.Queries.TestUtils;
+using Florists.Application.UnitTests.ProductyTransactions.Queries.TestUtils;
 using Florists.Application.UnitTests.TestUtils.Constants;
 using Florists.Application.UnitTests.TestUtils.Extenstions.InventoryTransactions;
+using Florists.Application.UnitTests.TestUtils.Extenstions.ProductTransactions;
 using Florists.Core.Common.CustomErrors;
 using Florists.Core.Entities;
 using Moq;
 
-namespace Florists.Application.UnitTests.InventoryTransactions.Queries.GetInventoryTransactions
+namespace Florists.Application.UnitTests.ProductTransactions.Queries.GetProductTransactions
 {
   public class GetProductTransactionsQueryTests
   {
-    private GetInventoryTransactionsQueryHandler _handler;
-    private Mock<IInventoryTransactionRepository> _mockInventoryTransactionRepository;
+    private GetProductTransactionsQueryHandler _handler;
+    private Mock<IProductTransactionRepository> _mockProductTransactionRepository;
 
     [SetUp]
     public void SetUp()
     {
-      _mockInventoryTransactionRepository = new Mock<IInventoryTransactionRepository>();
-      _handler = new(_mockInventoryTransactionRepository.Object);
+      _mockProductTransactionRepository = new Mock<IProductTransactionRepository>();
+      _handler = new(_mockProductTransactionRepository.Object);
     }
 
     [Test]
-    public async Task HandleGetInventoryTransactions_WhenUnableToFetchWithValidQuery_ShouldReturnDatabaseFetchError()
+    public async Task HandleGetProductTransactions_WhenUnableToFetchWithValidQuery_ShouldReturnDatabaseFetchError()
     {
-      var query = GetInventoryTransactionsQueryUtils.CreateQuery();
+      var query = GetProductTransactionsQueryUtils.CreateQuery();
 
       var offset = query.PerPage * (query.Page - 1);
 
-      _mockInventoryTransactionRepository
+      _mockProductTransactionRepository
         .Setup(m => m.GetManyAsync(
           offset,
           query.PerPage,
@@ -37,7 +38,7 @@ namespace Florists.Application.UnitTests.InventoryTransactions.Queries.GetInvent
           query.TransactionType,
           query.OrderBy,
           query.Order))
-        .Returns(Task.FromResult((List<InventoryTransaction>?)null));
+        .Returns(Task.FromResult((List<ProductTransaction>?)null));
 
       var result = await _handler.Handle(
         query,
@@ -48,7 +49,7 @@ namespace Florists.Application.UnitTests.InventoryTransactions.Queries.GetInvent
         Assert.That(result.IsError, Is.True);
         Assert.That(result.FirstError, Is.EqualTo(CustomErrors.Database.FetchError));
 
-        _mockInventoryTransactionRepository
+        _mockProductTransactionRepository
         .Verify(m => m.GetManyAsync(
           offset,
           query.PerPage,
@@ -65,15 +66,15 @@ namespace Florists.Application.UnitTests.InventoryTransactions.Queries.GetInvent
     [TestCase(5, 1)]
     [TestCase(3, 10)]
     [TestCase(16, 1)]
-    public async Task HandleGetInventoryTransactions_WhenValidQuery_ShouldReturnInventoryTransactionsResultDTOWithValidCollectionLength(int perPage, int page)
+    public async Task HandleGetProductTransactions_WhenValidQuery_ShouldReturnProductTransactionsResultDTOWithValidCollectionLength(int perPage, int page)
     {
-      var query = GetInventoryTransactionsQueryUtils.CreateQuery(perPage, page);
+      var query = GetProductTransactionsQueryUtils.CreateQuery(perPage, page);
 
       var offset = query.PerPage * (query.Page - 1);
 
-      var dbTransactions = GetInventoryTransactionsQueryUtils.CreateTransactions(offset, perPage);
+      var dbTransactions = GetProductTransactionsQueryUtils.CreateTransactions(offset, perPage);
 
-      _mockInventoryTransactionRepository
+      _mockProductTransactionRepository
         .Setup(m => m.GetManyAsync(
           offset,
           query.PerPage,
@@ -82,9 +83,9 @@ namespace Florists.Application.UnitTests.InventoryTransactions.Queries.GetInvent
           query.TransactionType,
           query.OrderBy,
           query.Order))
-        .Returns(Task.FromResult((List<InventoryTransaction>?)dbTransactions));
+        .Returns(Task.FromResult((List<ProductTransaction>?)dbTransactions));
 
-      _mockInventoryTransactionRepository
+      _mockProductTransactionRepository
         .Setup(m => m.CountAsync(
           query.DateFrom,
           query.DateTo,
@@ -100,7 +101,7 @@ namespace Florists.Application.UnitTests.InventoryTransactions.Queries.GetInvent
         Assert.That(result.IsError, Is.False);
         result.Value.ValidateCreatedFrom(query, offset);
 
-        _mockInventoryTransactionRepository
+        _mockProductTransactionRepository
         .Verify(m => m.GetManyAsync(
           offset,
           query.PerPage,
@@ -110,7 +111,7 @@ namespace Florists.Application.UnitTests.InventoryTransactions.Queries.GetInvent
           query.OrderBy,
           query.Order), Times.Once());
 
-        _mockInventoryTransactionRepository
+        _mockProductTransactionRepository
         .Verify(m => m.CountAsync(
           query.DateFrom,
           query.DateTo,
